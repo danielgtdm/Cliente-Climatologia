@@ -11,7 +11,17 @@ const routes: Routes = [{
     {
       path: 'temperaturas',
       loadChildren: () => import('./temperaturas/temperaturas.module')
-      .then(m => m.TemperaturasModule),
+      .then(m => m.TemperaturasModule)
+    },
+    {
+      path: 'precipitacion',
+      loadChildren: () => import('./precipitacion/precipitacion.module')
+      .then(m => m.PrecipitacionModule)
+    },
+    {
+      path: 'humedad',
+      loadChildren: () => import('./humedad/humedad.module')
+      .then(m => m.HumedadModule)
     }
   ],
 }];

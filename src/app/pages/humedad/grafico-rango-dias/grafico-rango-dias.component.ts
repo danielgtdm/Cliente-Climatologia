@@ -4,7 +4,9 @@ import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { RegistroService } from 'src/app/services/registro.service';
 import { Registro } from 'src/app/models/registro';
-import { Temperatura } from 'src/app/models/temperatura';
+import { TermometroHumedo } from 'src/app/models/termometro-humedo';
+import { TermometroSeco } from 'src/app/models/termometro-seco';
+import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
 
 @Component({
   selector: 'app-grafico-rango-dias',
@@ -19,9 +21,9 @@ export class GraficoRangoDiasComponent implements OnInit {
   data = [];
 
   public lineChartData: ChartDataSets[] = [
-    { data: [], label: 'Medias', yAxisID: 'y-axis-1' },
-    { data: [], label: 'Maximas' },
-    { data: [], label: 'Minimas' }
+    { data: [], label: '08:30 hrs', yAxisID: 'y-axis-1' },
+    { data: [], label: '14:00 hrs' },
+    { data: [], label: '18:00 hrs' }
   ];
   public lineChartLabels: Label[] = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
@@ -112,41 +114,51 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
   }
 
+  getHumedadRelativa(th, ts, pa){
+    var humedadRelativa;
+
+    humedadRelativa = 100*((6.11*Math.pow(10, ((7.5*th)/(th+237.3))))-(0.5*pa*(ts-th)/755))/(6.11*Math.pow(10, ((7.5*ts)/(ts+237.3))));
+
+    return humedadRelativa;
+  }
+
 
   async getDataInRange() {
-    var minimas = [];
-    var maximas = [];
-    var medias = [];
+    var h0830 = [];
+    var h1400 = [];
+    var h1800 = [];
     var labels = [];
     while (this.inicioRango.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.inicioRango;
       await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        var tem = registro.Temperatura as Temperatura;
+        var th = registro.TermometroHumedo as TermometroHumedo;
+        var ts = registro.TermometroSeco as TermometroSeco;
+        var pa = registro.PresionAtmosferica as PresionAtmosferica;
         var fecha = `${registro.fecha}`;
-        minimas.push(tem.minima);
-        maximas.push(tem.maxima);
-        medias.push(((tem.minima) + (tem.maxima) / 2));
+        h0830.push(this.getHumedadRelativa(th.h0830, ts.h0830, pa.h0830));
+        h1400.push(this.getHumedadRelativa(th.h1400, ts.h1400, pa.h1400));
+        h1800.push(this.getHumedadRelativa(th.h1800, ts.h1800, pa.h1800));
         labels.push(fecha.substring(0, 10));
-        this.viewDataGraphincs(medias, maximas, minimas, labels);
+        this.viewDataGraphincs(h0830, h1400, h1800, labels);
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
   }
 
-  viewDataGraphincs(medias, maximas, minimas, labels) {
+  viewDataGraphincs(h0830, h1400, h1800, labels) {
 
     this.lineChartLabels = labels;
     for (let i = 0; i < this.lineChartData.length; i++) {
       if (i == 0) {
-        this.lineChartData[i].data = medias;
+        this.lineChartData[i].data = h0830;
       }
       if (i == 1) {
-        this.lineChartData[i].data = maximas;
+        this.lineChartData[i].data = h1400;
       }
       if (i == 2) {
-        this.lineChartData[i].data = minimas;
+        this.lineChartData[i].data = h1800;
       }
     }
 

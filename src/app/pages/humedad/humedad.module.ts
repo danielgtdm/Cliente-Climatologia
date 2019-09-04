@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { GraficoRangoDiasComponent } from './grafico-rango-dias/grafico-rango-dias.component';
 import { GraficoRangoMesesComponent } from './grafico-rango-meses/grafico-rango-meses.component';
 import { GraficoRangoAniosComponent } from './grafico-rango-anios/grafico-rango-anios.component';
-import { TemperaturasComponent } from './temperaturas.component';
-import { TemperaturasRoutingModule } from './temperaturas-routing.module';
+import { HumedadComponent } from './humedad.component';
+import { HumedadRoutingModule } from './humedad-routing.module';
 
 import { NbCardModule } from '@nebular/theme';
 import { NbDatepickerModule } from '@nebular/theme';
@@ -13,18 +13,13 @@ import { NbDatepickerModule } from '@nebular/theme';
 import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
-  declarations: [
-    GraficoRangoDiasComponent,
-    GraficoRangoMesesComponent,
-    GraficoRangoAniosComponent,
-    TemperaturasComponent
-  ],
+  declarations: [HumedadComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent],
   imports: [
     CommonModule,
-    TemperaturasRoutingModule,
+    HumedadRoutingModule,
     NbCardModule,
     NbDatepickerModule,
     ChartsModule
   ]
 })
-export class TemperaturasModule { }
+export class HumedadModule { }
