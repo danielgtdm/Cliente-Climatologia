@@ -50,7 +50,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Precipitación',
     icon: 'droplet-outline',
-    link: '/pages/ui-features',
     children: [
       {
         title: 'Rango de Dias',
@@ -71,25 +70,71 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'cloud-upload-outline',
     children: [
       {
-        title: 'Dialog',
-        link: '/pages/modal-overlays/dialog',
+        title: 'Rango de Dias',
+        link: '/pages/nubosidad/grafico-rango-dias',
       },
       {
-        title: 'Window',
-        link: '/pages/modal-overlays/window',
+        title: 'Rango de Meses',
+        link: '/pages/nubosidad/grafico-rango-meses',
       },
       {
-        title: 'Popover',
-        link: '/pages/modal-overlays/popover',
-      },
-      {
-        title: 'Toastr',
-        link: '/pages/modal-overlays/toastr',
-      },
-      {
-        title: 'Tooltip',
-        link: '/pages/modal-overlays/tooltip',
-      },
+        title: 'Rango de Años',
+        link: '/pages/nubosidad/grafico-rango-anios',
+      }
     ],
-  }
+  },
+  {
+    title: 'Horas de Sol',
+    icon: 'clock-outline',
+    children: [
+      {
+        title: 'Rango de Dias',
+        link: '/pages/horas-sol/grafico-rango-dias',
+      },
+      {
+        title: 'Rango de Meses',
+        link: '/pages/horas-sol/grafico-rango-meses',
+      },
+      {
+        title: 'Rango de Años',
+        link: '/pages/horas-sol/grafico-rango-anios',
+      }
+    ],
+  },
+  {
+    title: 'Evaporimetro',
+    icon: 'clock-outline',
+    children: [
+      {
+        title: 'Rango de Dias',
+        link: '/pages/evaporimetro/grafico-rango-dias',
+      },
+      {
+        title: 'Rango de Meses',
+        link: '/pages/evaporimetro/grafico-rango-meses',
+      },
+      {
+        title: 'Rango de Años',
+        link: '/pages/evaporimetro/grafico-rango-anios',
+      }
+    ],
+  },
+  {
+    title: 'Presion Atmosferica',
+    icon: 'clock-outline',
+    children: [
+      {
+        title: 'Rango de Dias',
+        link: '/pages/presion-atmosferica/grafico-rango-dias',
+      },
+      {
+        title: 'Rango de Meses',
+        link: '/pages/presion-atmosferica/grafico-rango-meses',
+      },
+      {
+        title: 'Rango de Años',
+        link: '/pages/presion-atmosferica/grafico-rango-anios',
+      }
+    ],
+  },
 ];

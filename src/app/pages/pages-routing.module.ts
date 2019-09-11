@@ -22,7 +22,27 @@ const routes: Routes = [{
       path: 'humedad',
       loadChildren: () => import('./humedad/humedad.module')
       .then(m => m.HumedadModule)
-    }
+    },
+    {
+      path: 'nubosidad',
+      loadChildren: () => import('./nubosidad/nubosidad.module')
+      .then(m => m.NubosidadModule)
+    },
+    {
+      path: 'horas-sol',
+      loadChildren: () => import('./horas-sol/horas-sol.module')
+      .then(m => m.HorasSolModule)
+    },
+    {
+      path: 'evaporimetro',
+      loadChildren: () => import('./evaporimetro/evaporimetro.module')
+      .then(m => m.EvaporimetroModule)
+    },
+    {
+      path: 'presion-atmosferica',
+      loadChildren: () => import('./presion-atmosferica/presion-atmosferica.module')
+      .then(m => m.PresionAtmosfericaModule)
+    },
   ],
 }];
 
