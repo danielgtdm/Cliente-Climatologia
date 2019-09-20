@@ -43,6 +43,26 @@ const routes: Routes = [{
       loadChildren: () => import('./presion-atmosferica/presion-atmosferica.module')
       .then(m => m.PresionAtmosfericaModule)
     },
+    {
+      path: 'visibilidad',
+      loadChildren: () => import('./visibilidad/visibilidad.module')
+      .then(m => m.VisibilidadModule)
+    },
+    {
+      path: 'geotermometros',
+      loadChildren: () => import('./geotermometros/geotermometros.module')
+      .then(m => m.GeotermometrosModule)
+    },
+    {
+      path: 'termometro-seco',
+      loadChildren: () => import('./termometro-seco/termometro-seco.module')
+      .then(m => m.TermometroSecoModule)
+    },
+    {
+      path: 'termometro-humedo',
+      loadChildren: () => import('./termometro-humedo/termometro-humedo.module')
+      .then(m => m.TermometroHumedoModule)
+    },
   ],
 }];
 

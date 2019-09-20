@@ -1,0 +1,30 @@
+<nb-card>
+    <nb-card-header>
+      <h5 class="card-title">Grafico Geotermometros</h5>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <div class="picker-center">
+          <input nbInput placeholder="Selecciona un Rango" [nbDatepicker]="perrito" onfocus="blur();">
+          <nb-rangepicker #perrito (rangeChange)="selectedDate($event)"></nb-rangepicker>
+        </div>
+      </div>
+      <div class="row">
+         <div class="container grafico-alto">
+ 
+             <div class="flex">
+               <div class="flex-item">
+                 <div style="display: block;">
+                   <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels"
+                     [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+                     [chartType]="lineChartType" [plugins]="lineChartPlugins" (chartHover)="chartHovered($event)"
+                     (chartClick)="chartClicked($event)"></canvas>
+                 </div>
+               </div>
+             </div>
+     
+           </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+ 

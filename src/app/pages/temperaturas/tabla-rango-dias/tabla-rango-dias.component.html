@@ -1,0 +1,38 @@
+<nb-card>
+    <nb-card-header>
+      <h5 class="card-title">Tabla Temperaturas</h5>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <div class="picker-center">
+          <input nbInput placeholder="Selecciona un Rango" [nbDatepicker]="perrito" onfocus="blur();">
+          <nb-rangepicker #perrito (rangeChange)="selectedDate($event)"></nb-rangepicker>
+        </div>
+      </div>
+      <div class="row">
+        <table [nbTreeGrid]="source">
+            <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
+            <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns"></tr>
+  
+            <ng-container [nbTreeGridColumnDef]="customColumn">
+              <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>{{customColumn}}</th>
+              <td nbTreeGridCell *nbTreeGridCellDef="let row">
+  
+                <nb-tree-grid-row-toggle
+                  [expanded]="row.expanded"
+                  *ngIf="row.data.kind === 'dir'">
+                </nb-tree-grid-row-toggle>
+  
+                {{row.data[customColumn]}}
+  
+              </td>
+            </ng-container>
+  
+            <ng-container *ngFor="let column of defaultColumns" [nbTreeGridColumnDef]="column">
+              <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>{{column}}</th>
+              <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data[column] || '-'}}</td>
+            </ng-container>
+          </table>
+      </div>
+    </nb-card-body>
+  </nb-card>

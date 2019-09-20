@@ -17,7 +17,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/temperaturas/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/temperaturas/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/temperaturas/tabla-rango-dias',
+          },
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -26,7 +35,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/temperaturas/grafico-rango-anios',
-      }
+      },
+
     ],
   },
   {
@@ -134,6 +144,78 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/presion-atmosferica/grafico-rango-anios',
+      }
+    ],
+  },
+  {
+    title: 'Visibilidad',
+    icon: 'clock-outline',
+    children: [
+      {
+        title: 'Rango de Dias',
+        link: '/pages/visibilidad/grafico-rango-dias',
+      },
+      {
+        title: 'Rango de Meses',
+        link: '/pages/visibilidad/grafico-rango-meses',
+      },
+      {
+        title: 'Rango de Años',
+        link: '/pages/visibilidad/grafico-rango-anios',
+      }
+    ],
+  },
+  {
+    title: 'Geotermometros',
+    icon: 'clock-outline',
+    children: [
+      {
+        title: 'Rango de Dias',
+        link: '/pages/geotermometros/grafico-rango-dias',
+      },
+      {
+        title: 'Rango de Meses',
+        link: '/pages/geotermometros/grafico-rango-meses',
+      },
+      {
+        title: 'Rango de Años',
+        link: '/pages/geotermometros/grafico-rango-anios',
+      }
+    ],
+  },
+  {
+    title: 'Termometro Seco',
+    icon: 'clock-outline',
+    children: [
+      {
+        title: 'Rango de Dias',
+        link: '/pages/termometro-seco/grafico-rango-dias',
+      },
+      {
+        title: 'Rango de Meses',
+        link: '/pages/termometro-seco/grafico-rango-meses',
+      },
+      {
+        title: 'Rango de Años',
+        link: '/pages/termometro-seco/grafico-rango-anios',
+      }
+    ],
+  },
+  {
+    title: 'Termometro Humedo',
+    icon: 'clock-outline',
+    children: [
+      {
+        title: 'Rango de Dias',
+        link: '/pages/termometro-humedo/grafico-rango-dias',
+      },
+      {
+        title: 'Rango de Meses',
+        link: '/pages/termometro-humedo/grafico-rango-meses',
+      },
+      {
+        title: 'Rango de Años',
+        link: '/pages/termometro-humedo/grafico-rango-anios',
       }
     ],
   },
