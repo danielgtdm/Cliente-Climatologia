@@ -14,7 +14,7 @@ export class TermometroHumedoService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://localhost:5000/api/termometro-humedo';
+  apiUrl = 'http://34.70.201.180:5000/api/termometro-humedo';
 
 async  getTermometroHumedo(id: number){
     return await this.http.get(`${this.apiUrl}/${id}`);
