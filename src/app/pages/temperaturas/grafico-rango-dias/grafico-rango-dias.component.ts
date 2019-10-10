@@ -105,6 +105,15 @@ export class GraficoRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
+  // events
+  public chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
+    console.log(event, active);
+  }
+
+  public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
+    console.log(event, active);
+  }
+
   async selectedDate(event: any) {
 
     if (event.end != null) {
