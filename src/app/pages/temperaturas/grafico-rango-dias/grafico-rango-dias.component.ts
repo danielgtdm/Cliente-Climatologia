@@ -116,12 +116,12 @@ export class GraficoRangoDiasComponent implements OnInit {
 
   async getDataInRange() {
 
-    var listaRegistros = [];
+    var listaRegistros : Registro[];
     this.fechaBuscar = this.inicioRango;
     while (this.fechaBuscar.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.fechaBuscar;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
+      this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
         listaRegistros.push(registro);
         this.viewDataGraphincs(listaRegistros);
@@ -130,9 +130,9 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
   }
 
-  viewDataGraphincs(listaRegistros: any[]) {
-    var registros = listaRegistros as Registro[];
-    var aux_reg: Registro;
+  viewDataGraphincs(listaRegistros: Registro[]) {
+    var registros = listaRegistros;
+    var aux_reg = new Registro();
     var minimas = [];
     var maximas = [];
     var medias = [];
