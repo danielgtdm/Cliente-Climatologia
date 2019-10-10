@@ -18,6 +18,7 @@ export class GraficoRangoDiasComponent implements OnInit {
   finRango = new Date();
   data = [];
   fechaBuscar = new Date();
+  listaRegistros : Registro[];
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Medias', yAxisID: 'y-axis-1' },
@@ -116,15 +117,14 @@ export class GraficoRangoDiasComponent implements OnInit {
 
   async getDataInRange() {
 
-    var listaRegistros : Registro[];
     this.fechaBuscar = this.inicioRango;
     while (this.fechaBuscar.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.fechaBuscar;
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        listaRegistros.push(registro);
-        this.viewDataGraphincs(listaRegistros);
+        this.listaRegistros.push(registro);
+        this.viewDataGraphincs(this.listaRegistros);
       });
       this.fechaBuscar.setDate((this.fechaBuscar.getDate() + 1));
     }
