@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, EventEmitter  } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
@@ -17,6 +17,7 @@ export class GraficoRangoDiasComponent implements OnInit {
   inicioRango = new Date();
   finRango = new Date();
   data = [];
+  fechaBuscar = new Date();
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Medias', yAxisID: 'y-axis-1' },
@@ -103,9 +104,9 @@ export class GraficoRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
-   async selectedDate(event: any){
-    
-    if(event.end != null){
+  async selectedDate(event: any) {
+
+    if (event.end != null) {
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
@@ -114,28 +115,48 @@ export class GraficoRangoDiasComponent implements OnInit {
 
 
   async getDataInRange() {
+
+    var listaRegistros: Registro[];
+    this.fechaBuscar = this.inicioRango;
+    while (this.fechaBuscar.getDate() <= this.finRango.getDate()) {
+      var regbyf = new Registro();
+      regbyf.fecha = this.fechaBuscar;
+      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
+        var registro = r.payload as Registro;
+        listaRegistros.push(registro);
+        this.viewDataGraphincs(listaRegistros);
+      });
+      this.fechaBuscar.setDate((this.fechaBuscar.getDate() + 1));
+    }
+  }
+
+  viewDataGraphincs(listaRegistros: Registro[]) {
+    var registros = listaRegistros;
+    var aux_reg: Registro;
     var minimas = [];
     var maximas = [];
     var medias = [];
     var labels = [];
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        var tem = registro.Temperatura as Temperatura;
-        var fecha = `${registro.fecha}`;
-        minimas.push(tem.minima);
-        maximas.push(tem.maxima);
-        medias.push(((tem.minima) + (tem.maxima) / 2));
-        labels.push(fecha.substring(0, 10));
-        this.viewDataGraphincs(medias, maximas, minimas, labels);
-      });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
-    }
-  }
 
-  viewDataGraphincs(medias, maximas, minimas, labels) {
+    for (let i = 0; i < registros.length - 1; i++) {
+      for (let j = 0; j < registros.length; j++) {
+        if (registros[j].fecha.getDate() < registros[j - 1].fecha.getDate()) {
+          aux_reg = registros[j];
+          registros[j] = registros[j - 1];
+          registros[j - 1] = aux_reg;
+        }
+      }
+    }
+
+    for (let i = 0; i < registros.length; i++) {
+      const registro = registros[i];
+      var tem = registro.Temperatura as Temperatura;
+      var fecha = `${registro.fecha}`;
+      minimas.push(tem.minima);
+      maximas.push(tem.maxima);
+      medias.push(((tem.minima) + (tem.maxima) / 2));
+      labels.push(fecha.substring(0, 10));
+    }
 
     this.lineChartLabels = labels;
     for (let i = 0; i < this.lineChartData.length; i++) {
