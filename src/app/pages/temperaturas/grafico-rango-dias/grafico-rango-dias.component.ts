@@ -141,10 +141,10 @@ export class GraficoRangoDiasComponent implements OnInit {
     for (let i = 0; i < registros.length - 1; i++) {
       for (let j = 0; j < registros.length; j++) {
 
-          var reg1 = registros[j] as Registro;
-          var reg2 = registros[j-1] as Registro;
-          console.log("fecha de reg 1: " + reg1.fecha);
-          console.log("fecha de reg 2: " + reg2.fecha);
+          var reg1 = registros[j].fecha as Date;
+          var reg2 = registros[j-1].fecha as Date;
+          console.log("fecha de reg 1: " + reg1.getDate());
+          console.log("fecha de reg 2: " + reg2.getDate());
 
         if (registros[j].fecha.getDate() < registros[j - 1].fecha.getDate()) {
           aux_reg = registros[j];
