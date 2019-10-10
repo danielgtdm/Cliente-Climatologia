@@ -140,6 +140,12 @@ export class GraficoRangoDiasComponent implements OnInit {
     console.log("Tamaño de la lista: " + registros.length);
     for (let i = 0; i < registros.length - 1; i++) {
       for (let j = 0; j < registros.length; j++) {
+
+          var reg1 = registros[j] as Registro;
+          var reg2 = registros[j-1] as Registro;
+          console.log("fecha de reg 1: " + reg1.fecha.getDate());
+          console.log("fecha de reg 2: " + reg2.fecha.getDate());
+
         if (registros[j].fecha.getDate() < registros[j - 1].fecha.getDate()) {
           aux_reg = registros[j];
           registros[j] = registros[j - 1];
