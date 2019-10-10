@@ -137,17 +137,17 @@ export class GraficoRangoDiasComponent implements OnInit {
     var maximas = [];
     var medias = [];
     var labels = [];
+
     console.log("Tamaño de la lista: " + registros.length);
     for (let i = 0; i < registros.length; i++) {
       for (let j = 0; j < registros.length -1; j++) {
-
           var reg1 = registros[j] as Registro;
           var reg2 = registros[j+1] as Registro;
           console.log("fecha de reg 1: " + reg1.fecha);
           console.log("fecha de reg 2: " + reg2.fecha);
           var nuevo = new Date(reg1.fecha);
           console.log("la fecha casteada es: " + nuevo.getDate());
-        if (registros[j].fecha.getDate() < registros[j+1].fecha.getDate()) {
+        if (reg1.fecha < reg2.fecha) {
           aux_reg = registros[j];
           registros[j] = registros[j+1];
           registros[j+1] = aux_reg;
