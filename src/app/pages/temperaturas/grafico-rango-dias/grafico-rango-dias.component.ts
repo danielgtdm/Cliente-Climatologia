@@ -131,7 +131,7 @@ export class GraficoRangoDiasComponent implements OnInit {
   }
 
   viewDataGraphincs(listaRegistros: any[]) {
-    var registros = listaRegistros;
+    var registros = listaRegistros as Registro[];
     var aux_reg: Registro;
     var minimas = [];
     var maximas = [];
