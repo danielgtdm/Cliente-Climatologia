@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, EventEmitter  } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
@@ -104,13 +104,22 @@ export class GraficoRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
-   async selectedDate(event: any){
-    
-    if(event.end != null){
+  async selectedDate(event: any) {
+
+    if (event.end != null) {
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
     }
+  }
+
+  // events
+  public chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
+    console.log(event, active);
+  }
+
+  public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
+    console.log(event, active);
   }
 
   async getDataInRange() {
