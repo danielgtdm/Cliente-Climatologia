@@ -18,7 +18,7 @@ export class GraficoRangoDiasComponent implements OnInit {
   finRango = new Date();
   data = [];
   fechaBuscar = new Date();
-  listaRegistros : Registro[];
+  listaRegistros = [];
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Medias', yAxisID: 'y-axis-1' },
