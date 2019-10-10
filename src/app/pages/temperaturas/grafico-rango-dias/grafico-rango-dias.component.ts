@@ -137,7 +137,7 @@ export class GraficoRangoDiasComponent implements OnInit {
     var maximas = [];
     var medias = [];
     var labels = [];
-
+    console.log("Tamaño de la lista: " + registros.length);
     for (let i = 0; i < registros.length - 1; i++) {
       for (let j = 0; j < registros.length; j++) {
         if (registros[j].fecha.getDate() < registros[j - 1].fecha.getDate()) {
