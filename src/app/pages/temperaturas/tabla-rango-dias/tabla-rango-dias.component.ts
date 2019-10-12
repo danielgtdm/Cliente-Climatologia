@@ -45,6 +45,10 @@ export class TablaRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
+  updateTable(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>){
+    this.source = dataSourceBuilder.create(this.data);
+  }
+
   async selectedDate(event: any) {
 
     if (event.end != null) {
@@ -56,10 +60,6 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   async getDataInRange() {
-    var minimas = [];
-    var maximas = [];
-    var medias = [];
-    var labels = [];
     while (this.inicioRango.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.inicioRango;
@@ -73,7 +73,8 @@ export class TablaRangoDiasComponent implements OnInit {
           fecha: fecha,
           minima: tem.minima,
           media: media,
-          maxima: tem.maxima
+          maxima: tem.maxima,
+          expanded: false
         };
         this.data.push(dato);
       });
