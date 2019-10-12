@@ -28,6 +28,7 @@ export class TablaRangoDiasComponent implements OnInit {
   customColumn = 'Fecha';
   defaultColumns = ['Minima', 'Media', 'Maxima'];
   allColumns = [this.customColumn, ...this.defaultColumns];
+  cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
 
 
@@ -38,6 +39,7 @@ export class TablaRangoDiasComponent implements OnInit {
       expandedGetter: (node: FSEntry) => !!node.expanded,
     };
     this.source = dataSourceBuilder.create(this.data, getters);
+    this.cast = dataSourceBuilder;
   }
 
   private data: FSEntry[] = [];
@@ -45,8 +47,8 @@ export class TablaRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
-  updateTable(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>){
-    this.source = dataSourceBuilder.create(this.data);
+  updateTable(){
+    this.source = this.cast.create(this.data);
   }
 
   async selectedDate(event: any) {
@@ -79,6 +81,7 @@ export class TablaRangoDiasComponent implements OnInit {
         this.data.push(dato);
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
+      this.updateTable();
     }
   }
 
