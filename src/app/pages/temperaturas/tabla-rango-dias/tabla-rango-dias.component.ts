@@ -56,7 +56,6 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   async getDataInRange() {
-    var dato : FSEntry;
     var minimas = [];
     var maximas = [];
     var medias = [];
@@ -68,10 +67,14 @@ export class TablaRangoDiasComponent implements OnInit {
         var registro = r.payload as Registro;
         var tem = registro.Temperatura as Temperatura;
         var fecha = `${registro.fecha}`;
-        dato.fecha = fecha;
-        dato.minima = tem.minima;
-        dato.media = ((tem.minima) + (tem.maxima) / 2);
-        dato.maxima = tem.maxima;
+        var sumadas = tem.minima + tem.maxima;
+        var media = sumadas / 2;
+        var dato : FSEntry ={
+          fecha: fecha,
+          minima: tem.minima,
+          media: media,
+          maxima: tem.maxima
+        };
         this.data.push(dato);
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
