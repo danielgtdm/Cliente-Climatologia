@@ -42,7 +42,14 @@ export class TablaRangoDiasComponent implements OnInit {
     this.cast = dataSourceBuilder;
   }
 
-  private data: FSEntry[] = [];
+  private data: FSEntry[] = [
+    {
+      fecha: "",
+      minima: 22,
+      media: 23,
+      maxima: 32
+    },
+  ];
 
   ngOnInit() {
   }
