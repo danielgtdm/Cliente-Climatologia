@@ -48,31 +48,36 @@ export class TablaRangoDiasComponent implements OnInit {
       fecha: "2019-01-01",
       minima: 22,
       media: 23,
-      maxima: 32
+      maxima: 32,
+      childEntries: []
     },
     {
       fecha: "2019-01-02",
       minima: 22,
       media: 23,
-      maxima: 32
+      maxima: 32,
+      childEntries: []
     },
     {
       fecha: "2019-01-03",
       minima: 22,
       media: 23,
-      maxima: 32
+      maxima: 32,
+      childEntries: []
     },
     {
       fecha: "2019-01-04",
       minima: 22,
       media: 23,
-      maxima: 32
+      maxima: 32,
+      childEntries: []
     },
     {
       fecha: "2019-01-05",
       minima: 22,
       media: 23,
-      maxima: 32
+      maxima: 32,
+      childEntries: []
     },
   ];
 
