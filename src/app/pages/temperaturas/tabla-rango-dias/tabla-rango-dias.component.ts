@@ -24,6 +24,7 @@ export class TablaRangoDiasComponent implements OnInit {
   inicioRango = new Date();
   finRango = new Date();
   datos = [];
+  listaRegistros = [];
 
   customColumn = 'fecha';
   defaultColumns = ['minima', 'media', 'maxima'];
@@ -84,7 +85,39 @@ export class TablaRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
-  updateTable(){
+  updateTable(listaRegistros: Registro[]) {
+
+    var registros = listaRegistros;
+    var aux_reg = new Registro();
+
+    for (let i = 0; i < registros.length; i++) {
+      for (let j = 0; j < registros.length - 1; j++) {
+        var reg1 = registros[j] as Registro;
+        var reg2 = registros[j + 1] as Registro;
+        if (reg1.fecha > reg2.fecha) {
+          aux_reg = registros[j];
+          registros[j] = registros[j + 1];
+          registros[j + 1] = aux_reg;
+        }
+      }
+    }
+
+    for (let i = 0; i < registros.length; i++) {
+      const registro = registros[i];
+      var tem = registro.Temperatura as Temperatura;
+      var fecha = `${registro.fecha}`;
+      var sumadas = tem.minima + tem.maxima;
+      var media = sumadas / 2;
+      var dato: FSEntry = {
+        fecha: fecha,
+        minima: tem.minima,
+        media: media,
+        maxima: tem.maxima,
+        childEntries: []     
+      };
+      this.data.push(dato);
+    }
+
     this.source = this.cast.create(this.data, this.getters);
   }
 
@@ -104,21 +137,10 @@ export class TablaRangoDiasComponent implements OnInit {
       regbyf.fecha = this.inicioRango;
       await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        var tem = registro.Temperatura as Temperatura;
-        var fecha = `${registro.fecha}`;
-        var sumadas = tem.minima + tem.maxima;
-        var media = sumadas / 2;
-        var dato : FSEntry ={
-          fecha: fecha,
-          minima: tem.minima,
-          media: media,
-          maxima: tem.maxima,
-          expanded: false
-        };
-        this.data.push(dato);
+        this.listaRegistros.push(registro);
+        this.updateTable(this.listaRegistros);        
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
-      this.updateTable();
     }
   }
 
