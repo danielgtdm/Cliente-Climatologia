@@ -30,7 +30,7 @@ export class TablaRangoDiasComponent implements OnInit {
   allColumns = [this.customColumn, ...this.defaultColumns];
   cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
-
+  getters: NbGetters<FSEntry, FSEntry>;
 
   constructor(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, public registroService: RegistroService) {
     const getters: NbGetters<FSEntry, FSEntry> = {
@@ -40,6 +40,7 @@ export class TablaRangoDiasComponent implements OnInit {
     };
     this.source = dataSourceBuilder.create(this.data, getters);
     this.cast = dataSourceBuilder;
+    this.getters = getters;
   }
 
   private data: FSEntry[] = [
@@ -79,7 +80,7 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   updateTable(){
-    this.source = this.cast.create(this.data);
+    this.source = this.cast.create(this.data, this.getters);
   }
 
   async selectedDate(event: any) {

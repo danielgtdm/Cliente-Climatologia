@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, EventEmitter  } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
@@ -16,6 +16,7 @@ export class GraficoRangoDiasComponent implements OnInit {
   inicioRango = new Date();
   finRango = new Date();
   data = [];
+  listaRegistros = [];
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Horas de Sol', yAxisID: 'y-axis-1' }
@@ -56,7 +57,7 @@ export class GraficoRangoDiasComponent implements OnInit {
           label: {
             enabled: true,
             fontColor: 'orange',
-            content: 'Mitad de Semana'
+            content: 'Mitad del Periodo'
           }
         },
       ],
@@ -109,9 +110,9 @@ export class GraficoRangoDiasComponent implements OnInit {
     console.log(event, active);
   }
 
-   async selectedDate(event: any){
-    
-    if(event.end != null){
+  async selectedDate(event: any) {
+
+    if (event.end != null) {
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
@@ -120,24 +121,45 @@ export class GraficoRangoDiasComponent implements OnInit {
 
 
   async getDataInRange() {
-    var HS = [];
-    var labels = [];
+
     while (this.inicioRango.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.inicioRango;
       await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        var horasSol = registro.horas_sol;
-        var fecha = `${registro.fecha}`;
-        HS.push(horasSol);
-        labels.push(fecha.substring(0, 10));
-        this.viewDataGraphincs(HS, labels);
+        this.listaRegistros.push(registro);
+        this.viewDataGraphincs(this.listaRegistros);
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
   }
 
-  viewDataGraphincs(HS, labels) {
+  viewDataGraphincs(listaRegistros: Registro[]) {
+
+    var registros = listaRegistros;
+    var aux_reg = new Registro();
+    var HS = [];
+    var labels = [];
+
+    for (let i = 0; i < registros.length; i++) {
+      for (let j = 0; j < registros.length - 1; j++) {
+        var reg1 = registros[j] as Registro;
+        var reg2 = registros[j + 1] as Registro;
+        if (reg1.fecha > reg2.fecha) {
+          aux_reg = registros[j];
+          registros[j] = registros[j + 1];
+          registros[j + 1] = aux_reg;
+        }
+      }
+    }
+
+    for (let i = 0; i < registros.length; i++) {
+      const registro = registros[i];
+      var horasSol = registro.horas_sol;
+      var fecha = `${registro.fecha}`;
+      HS.push(horasSol);
+      labels.push(fecha.substring(0, 10));
+    }
 
     this.lineChartLabels = labels;
     for (let i = 0; i < this.lineChartData.length; i++) {

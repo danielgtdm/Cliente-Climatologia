@@ -61,7 +61,7 @@ export class GraficoRangoDiasComponent implements OnInit {
           label: {
             enabled: true,
             fontColor: 'orange',
-            content: 'Mitad de Semana'
+            content: 'Mitad del Periodo'
           }
         },
       ],
