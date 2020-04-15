@@ -44,48 +44,15 @@ export class TablaRangoDiasComponent implements OnInit {
     this.getters = getters;
   }
 
-  private data: FSEntry[] = [
-    {
-      fecha: "2019-01-01",
-      minima: 22,
-      media: 23,
-      maxima: 32,
-      childEntries: []
-    },
-    {
-      fecha: "2019-01-02",
-      minima: 22,
-      media: 23,
-      maxima: 32,
-      childEntries: []
-    },
-    {
-      fecha: "2019-01-03",
-      minima: 22,
-      media: 23,
-      maxima: 32,
-      childEntries: []
-    },
-    {
-      fecha: "2019-01-04",
-      minima: 22,
-      media: 23,
-      maxima: 32,
-      childEntries: []
-    },
-    {
-      fecha: "2019-01-05",
-      minima: 22,
-      media: 23,
-      maxima: 32,
-      childEntries: []
-    },
-  ];
+  private data: FSEntry[] = [];
+  private dataClean: FSEntry[] = [];
 
   ngOnInit() {
   }
 
   updateTable(listaRegistros: Registro[]) {
+    
+    this.data = this.dataClean; 
 
     var registros = listaRegistros;
     var aux_reg = new Registro();
