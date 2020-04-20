@@ -9,8 +9,11 @@ import { PrecipitacionRoutingModule } from './precipitacion-routing.module';
 
 import { NbCardModule } from '@nebular/theme';
 import { NbDatepickerModule } from '@nebular/theme';
+import { NbTreeGridModule } from '@nebular/theme';
+
 
 import { ChartsModule } from 'ng2-charts';
+import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +21,7 @@ import { ChartsModule } from 'ng2-charts';
     GraficoRangoDiasComponent,
     GraficoRangoMesesComponent,
     GraficoRangoAniosComponent,
+    TablaRangoDiasComponent,
 
   ],
   imports: [
@@ -25,6 +29,7 @@ import { ChartsModule } from 'ng2-charts';
     PrecipitacionRoutingModule,
     NbCardModule,
     NbDatepickerModule,
+    NbTreeGridModule,
     ChartsModule
   ]
 })

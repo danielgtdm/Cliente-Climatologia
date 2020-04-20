@@ -26,8 +26,8 @@ export class TablaRangoDiasComponent implements OnInit {
   datos = [];
   listaRegistros = [];
 
-  customColumn = 'fecha';
-  defaultColumns = ['minima', 'media', 'maxima'];
+  customColumn = 'Fecha';
+  defaultColumns = ['Minima', 'Media', 'Maxima'];
   allColumns = [this.customColumn, ...this.defaultColumns];
   cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
@@ -52,11 +52,13 @@ export class TablaRangoDiasComponent implements OnInit {
 
   updateTable(listaRegistros: Registro[]) {
     
+    //Limpiar tabla en caso de elegir otro rango
     this.data = this.dataClean; 
 
     var registros = listaRegistros;
     var aux_reg = new Registro();
 
+    //Ordenar por fechas
     for (let i = 0; i < registros.length; i++) {
       for (let j = 0; j < registros.length - 1; j++) {
         var reg1 = registros[j] as Registro;
@@ -69,6 +71,7 @@ export class TablaRangoDiasComponent implements OnInit {
       }
     }
 
+    //extraer datos
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
       var tem = registro.Temperatura as Temperatura;
@@ -85,6 +88,7 @@ export class TablaRangoDiasComponent implements OnInit {
       this.data.push(dato);
     }
 
+    //reconstruir tabla
     this.source = this.cast.create(this.data, this.getters);
   }
 

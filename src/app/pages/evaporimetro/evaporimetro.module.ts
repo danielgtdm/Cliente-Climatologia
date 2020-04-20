@@ -11,14 +11,17 @@ import { NbCardModule } from '@nebular/theme';
 import { NbDatepickerModule } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
+import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
+import { NbTreeGridModule } from '@nebular/theme';
 
 @NgModule({
-  declarations: [EvaporimetroComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent],
+  declarations: [EvaporimetroComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent, TablaRangoDiasComponent],
   imports: [
     CommonModule,
     EvaporimetroRoutingModule,
     NbCardModule,
     NbDatepickerModule,
+    NbTreeGridModule,
     ChartsModule
   ]
 })

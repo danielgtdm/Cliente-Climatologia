@@ -45,7 +45,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/humedad/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/humedad/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/humedad/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -63,7 +72,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/precipitacion/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/precipitacion/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/precipitacion/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -81,7 +99,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/nubosidad/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/nubosidad/grafico-rango-dias'
+          },
+          {
+            title: ' Tabla',
+            link: '/pages/nubosidad/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -99,7 +126,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/horas-sol/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/horas-sol/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/horas-sol/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -117,7 +153,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/evaporimetro/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/evaporimetro/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/evaporimetro/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -135,7 +180,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/presion-atmosferica/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/presion-atmosferica/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/presion-atmosferica/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -153,7 +207,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/visibilidad/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/visibilidad/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/visibilidad/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -171,7 +234,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/geotermometros/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/geotermometros/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/geotermometros/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -189,7 +261,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/termometro-seco/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/termometro-seco/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/termometro-seco/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',
@@ -207,7 +288,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Rango de Dias',
-        link: '/pages/termometro-humedo/grafico-rango-dias',
+        children: [
+          {
+            title: 'Grafico',
+            link: '/pages/termometro-humedo/grafico-rango-dias'
+          },
+          {
+            title: 'Tabla',
+            link: '/pages/termometro-humedo/tabla-rango-dias'
+          }
+        ]
       },
       {
         title: 'Rango de Meses',

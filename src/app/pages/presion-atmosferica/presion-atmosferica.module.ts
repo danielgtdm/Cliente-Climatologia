@@ -9,16 +9,19 @@ import { GraficoRangoAniosComponent } from './grafico-rango-anios/grafico-rango-
 
 import { NbCardModule } from '@nebular/theme';
 import { NbDatepickerModule } from '@nebular/theme';
+import { NbTreeGridModule } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
+import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
 
 @NgModule({
-  declarations: [PresionAtmosfericaComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent],
+  declarations: [PresionAtmosfericaComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent, TablaRangoDiasComponent],
   imports: [
     CommonModule,
     PresionAtmosfericaRoutingModule,
     NbCardModule,
     NbDatepickerModule,
+    NbTreeGridModule,
     ChartsModule
   ]
 })

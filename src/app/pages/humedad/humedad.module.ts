@@ -9,16 +9,19 @@ import { HumedadRoutingModule } from './humedad-routing.module';
 
 import { NbCardModule } from '@nebular/theme';
 import { NbDatepickerModule } from '@nebular/theme';
+import { NbTreeGridModule } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
+import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
 
 @NgModule({
-  declarations: [HumedadComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent],
+  declarations: [HumedadComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent, TablaRangoDiasComponent],
   imports: [
     CommonModule,
     HumedadRoutingModule,
     NbCardModule,
     NbDatepickerModule,
+    NbTreeGridModule,
     ChartsModule
   ]
 })

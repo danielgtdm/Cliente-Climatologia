@@ -5,6 +5,7 @@ import { HorasSolComponent } from './horas-sol.component';
 import { GraficoRangoDiasComponent } from './grafico-rango-dias/grafico-rango-dias.component';
 import { GraficoRangoMesesComponent } from './grafico-rango-meses/grafico-rango-meses.component';
 import { GraficoRangoAniosComponent } from './grafico-rango-anios/grafico-rango-anios.component';
+import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
 
 const routes: Routes = [{
     path: '',
@@ -21,6 +22,10 @@ const routes: Routes = [{
       {
         path: 'grafico-rango-anios',
         component: GraficoRangoAniosComponent,
+      },
+      {
+        path: 'tabla-rango-dias',
+        component: TablaRangoDiasComponent
       }
     ],
   }];
