@@ -42,8 +42,8 @@ export class TablaRangoDiasComponent implements OnInit {
     this.getters = getters;
   }
 
-  private data: FSEntry[] = [];
-  private dataClean: FSEntry[] = [];
+  private data: FSEntry[];
+  private dataClean: FSEntry[];
 
   ngOnInit() {
   }
@@ -81,6 +81,7 @@ export class TablaRangoDiasComponent implements OnInit {
     if (event.end != null) {
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
+      this.data = this.dataClean;
       this.getDataInRange();
     }
 
