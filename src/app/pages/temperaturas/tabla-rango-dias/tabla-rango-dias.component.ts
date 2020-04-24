@@ -26,8 +26,8 @@ export class TablaRangoDiasComponent implements OnInit {
   inicioRango = new Date();
   finRango = new Date();
   datos = [];
-  listaRegistros: Registro[];
-  vac: Registro[];
+  listaRegistros: Registro[] = [];
+  vac: Registro[] = [];
 
   customColumn = 'fecha';
   defaultColumns = ['minima', 'media', 'maxima'];
