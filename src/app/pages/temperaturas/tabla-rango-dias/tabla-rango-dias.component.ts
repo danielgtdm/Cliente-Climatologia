@@ -20,11 +20,9 @@ interface FSEntry {
 })
 export class TablaRangoDiasComponent implements OnInit {
 
-  fechas = [];
   inicioRango = new Date();
   finRango = new Date();
   datos: FSEntry[];
-  listaRegistros: Registro[];
 
   customColumn = 'Fecha';
   defaultColumns = ['Minima', 'Media', 'Maxima'];
