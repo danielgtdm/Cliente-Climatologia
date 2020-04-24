@@ -24,7 +24,6 @@ export class TablaRangoDiasComponent implements OnInit {
   inicioRango = new Date();
   finRango = new Date();
   datos = [];
-  listaRegistros = [];
 
   customColumn = 'fecha';
   defaultColumns = ['minima', 'media', 'maxima'];
@@ -99,13 +98,14 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   async getDataInRange() {
+    var listaRegistros: Registro[] = [];
     while (this.inicioRango.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.inicioRango;
       await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.updateTable(this.listaRegistros);        
+        listaRegistros.push(registro);
+        this.updateTable(listaRegistros);        
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
