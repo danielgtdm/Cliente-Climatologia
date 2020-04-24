@@ -85,6 +85,7 @@ export class TablaRangoDiasComponent implements OnInit {
         maxima: tem.maxima,
         childEntries: []     
       };
+      alert('registro: ' + dato);
       this.data.push(dato);
     }
 
@@ -108,7 +109,6 @@ export class TablaRangoDiasComponent implements OnInit {
       regbyf.fecha = this.inicioRango;
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        alert('registro: ' + registro.evaporamiento);
         this.listaRegistros.push(registro);
         this.updateTable(this.listaRegistros);        
       });
