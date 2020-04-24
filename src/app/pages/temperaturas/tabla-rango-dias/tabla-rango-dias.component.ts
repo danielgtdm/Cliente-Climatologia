@@ -76,10 +76,10 @@ export class TablaRangoDiasComponent implements OnInit {
       var sumadas = tem.minima + tem.maxima;
       var media = sumadas / 2;
       var dato: FSEntry = {
-        fecha: fecha,
-        minima: tem.minima,
-        media: media,
-        maxima: tem.maxima,
+        Fecha: fecha,
+        Minima: tem.minima,
+        Media: media,
+        Maxima: tem.maxima,
         childEntries: []     
       };
       this.data.push(dato);
