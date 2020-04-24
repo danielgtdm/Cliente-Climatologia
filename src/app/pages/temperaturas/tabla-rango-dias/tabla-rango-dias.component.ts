@@ -23,8 +23,8 @@ export class TablaRangoDiasComponent implements OnInit {
   fechas = [];
   inicioRango = new Date();
   finRango = new Date();
-  datos = [];
-  listaRegistros = [];
+  datos: FSEntry[];
+  listaRegistros: Registro[];
 
   customColumn = 'Fecha';
   defaultColumns = ['Minima', 'Media', 'Maxima'];
@@ -51,9 +51,9 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   updateTable(listaRegistros: Registro[]) {
-    
+
     //Limpiar tabla en caso de elegir otro rango
-    this.data = this.dataClean; 
+    this.data = this.dataClean;
 
     var registros = listaRegistros;
     var aux_reg = new Registro();
@@ -72,20 +72,7 @@ export class TablaRangoDiasComponent implements OnInit {
     }
 
     //extraer datos
-    for (let i = 0; i < registros.length; i++) {
-      const registro = registros[i];
-      var tem = registro.Temperatura as Temperatura;
-      var fecha = `${registro.fecha}`;
-      var sumadas = tem.minima + tem.maxima;
-      var media = sumadas / 2;
-      var dato: FSEntry = {
-        fecha: fecha,
-        minima: tem.minima,
-        media: media,
-        maxima: tem.maxima 
-      };
-      this.data.push(dato);
-    }
+    
 
     //reconstruir tabla
     this.source = this.cast.create(this.data, this.getters);
@@ -107,8 +94,17 @@ export class TablaRangoDiasComponent implements OnInit {
       regbyf.fecha = this.inicioRango;
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.updateTable(this.listaRegistros);        
+        var temperatura = registro.Temperatura;
+        var sumadas = temperatura.minima + temperatura.maxima;
+        var media = sumadas / 2;
+        var dato: FSEntry = {
+          fecha: `${registro.fecha}`,
+          minima: temperatura.minima,
+          media: media,
+          maxima: temperatura.maxima
+        };
+        this.data.push(dato);
+        this.source = this.cast.create(this.data, this.getters);
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
