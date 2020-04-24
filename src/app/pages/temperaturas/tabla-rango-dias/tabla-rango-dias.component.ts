@@ -4,6 +4,8 @@ import { RegistroService } from 'src/app/services/registro.service';
 import { Registro } from 'src/app/models/registro';
 import { Temperatura } from 'src/app/models/temperatura';
 
+import { ExcelService } from 'src/app/services/excel.service';
+
 interface FSEntry {
   fecha: string;
   minima: number;
@@ -24,6 +26,8 @@ export class TablaRangoDiasComponent implements OnInit {
   inicioRango = new Date();
   finRango = new Date();
   datos = [];
+  listaRegistros: Registro[];
+  vac: Registro[];
 
   customColumn = 'fecha';
   defaultColumns = ['minima', 'media', 'maxima'];
@@ -32,7 +36,7 @@ export class TablaRangoDiasComponent implements OnInit {
   source: NbTreeGridDataSource<FSEntry>;
   getters: NbGetters<FSEntry, FSEntry>;
 
-  constructor(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, public registroService: RegistroService) {
+  constructor(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, public registroService: RegistroService, public excelService: ExcelService) {
     const getters: NbGetters<FSEntry, FSEntry> = {
       dataGetter: (node: FSEntry) => node,
       childrenGetter: (node: FSEntry) => node.childEntries || undefined,
@@ -49,9 +53,13 @@ export class TablaRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
+  exportar(){
+    this.excelService.generateExcel(this.listaRegistros);
+  }
+
   updateTable(listaRegistros: Registro[]) {
-    
-    this.data = this.dataClean; 
+
+    this.data = this.dataClean;
 
     var registros = listaRegistros;
     var aux_reg = new Registro();
@@ -79,7 +87,7 @@ export class TablaRangoDiasComponent implements OnInit {
         minima: tem.minima,
         media: media,
         maxima: tem.maxima,
-        childEntries: []     
+        childEntries: []
       };
       this.data.push(dato);
     }
@@ -92,20 +100,21 @@ export class TablaRangoDiasComponent implements OnInit {
     if (event.end != null) {
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
+      this.listaRegistros = this.vac;
+
       this.getDataInRange();
     }
 
   }
 
   async getDataInRange() {
-    var listaRegistros: Registro[] = [];
     while (this.inicioRango.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
+      this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        listaRegistros.push(registro);
-        this.updateTable(listaRegistros);        
+        this.listaRegistros.push(registro);
+        this.updateTable(this.listaRegistros);
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
