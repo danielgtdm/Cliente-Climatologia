@@ -110,8 +110,8 @@ export class TablaRangoDiasComponent implements OnInit {
         }else{
           alert(this.finRango.getDate() - this.inicioRango.getDate());
         }
-        this.inicioRango.setDate((this.inicioRango.getDate() + 1));
       });
+      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
       this.updateTable(this.registros);
     }
   }
