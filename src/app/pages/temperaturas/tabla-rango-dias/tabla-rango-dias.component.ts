@@ -82,10 +82,8 @@ export class TablaRangoDiasComponent implements OnInit {
         fecha: fecha,
         minima: tem.minima,
         media: media,
-        maxima: tem.maxima,
-        childEntries: []     
+        maxima: tem.maxima 
       };
-      alert('registro: ' + dato.media);
       this.data.push(dato);
     }
 
