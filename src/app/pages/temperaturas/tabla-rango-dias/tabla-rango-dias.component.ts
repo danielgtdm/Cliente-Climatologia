@@ -113,6 +113,7 @@ export class TablaRangoDiasComponent implements OnInit {
         }
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
+      this.updateTable(this.registros);
     }
   }
 
