@@ -22,7 +22,7 @@ export class TablaRangoDiasComponent implements OnInit {
 
   inicioRango = new Date();
   finRango = new Date();
-  datos: FSEntry[];
+  registros: Registro[] = [];
 
   customColumn = 'Fecha';
   defaultColumns = ['Minima', 'Media', 'Maxima'];
@@ -70,7 +70,19 @@ export class TablaRangoDiasComponent implements OnInit {
     }
 
     //extraer datos
-    
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+      var temperatura = registro.Temperatura as Temperatura;
+      var sumadas = temperatura.minima + temperatura.maxima;
+      var media = sumadas / 2;
+      var dato: FSEntry = {
+        fecha: `${registro.fecha}`,
+        minima: temperatura.minima,
+        media: media,
+        maxima: temperatura.maxima
+      };
+      this.data.push(dato);
+    }
 
     //reconstruir tabla
     this.source = this.cast.create(this.data, this.getters);
@@ -93,17 +105,10 @@ export class TablaRangoDiasComponent implements OnInit {
       regbyf.fecha = this.inicioRango;
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        var temperatura = registro.Temperatura;
-        var sumadas = temperatura.minima + temperatura.maxima;
-        var media = sumadas / 2;
-        var dato: FSEntry = {
-          fecha: `${registro.fecha}`,
-          minima: temperatura.minima,
-          media: media,
-          maxima: temperatura.maxima
-        };
-        this.data.push(dato);
-        this.source = this.cast.create(this.data, this.getters);
+        this.registros.push(registro);
+        if ((this.inicioRango.getDate() - this.finRango.getDate()) == 0) {
+          this.updateTable(this.registros);
+        }
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
