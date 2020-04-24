@@ -43,6 +43,14 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   private data: FSEntry[] = [];
+  private ksi:  FSEntry[] = [
+    {
+      fecha: "la de hoy",
+      maxima: 12,
+      minima: 1,
+      media: 4
+    }
+  ]
   private dataClean: FSEntry[] = [];
 
   ngOnInit() {
@@ -85,7 +93,7 @@ export class TablaRangoDiasComponent implements OnInit {
     }
 
     //reconstruir tabla
-    this.source = this.cast.create(this.data, this.getters);
+    this.source = this.cast.create(this.ksi, this.getters);
   }
 
   async selectedDate(event: any) {
