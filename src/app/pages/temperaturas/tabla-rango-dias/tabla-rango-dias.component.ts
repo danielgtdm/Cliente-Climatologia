@@ -26,8 +26,8 @@ export class TablaRangoDiasComponent implements OnInit {
   datos = [];
   listaRegistros = [];
 
-  customColumn = 'fecha';
-  defaultColumns = ['minima', 'media', 'maxima'];
+  customColumn = 'Fecha';
+  defaultColumns = ['Minima', 'Media', 'Maxima'];
   allColumns = [this.customColumn, ...this.defaultColumns];
   cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
