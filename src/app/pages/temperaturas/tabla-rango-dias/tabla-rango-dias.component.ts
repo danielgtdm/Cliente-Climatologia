@@ -42,7 +42,7 @@ export class TablaRangoDiasComponent implements OnInit {
     this.getters = getters;
   }
 
-  private data: FSEntry[];
+  private data: FSEntry[] = [];
   private dataClean: FSEntry[];
 
   ngOnInit() {
