@@ -5,10 +5,10 @@ import { Registro } from 'src/app/models/registro';
 import { Temperatura } from 'src/app/models/temperatura';
 
 interface FSEntry {
-  Fecha: string;
-  Minima: number;
-  Media: number;
-  Maxima: number;
+  fecha: string;
+  minima: number;
+  media: number;
+  maxima: number;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
@@ -26,8 +26,8 @@ export class TablaRangoDiasComponent implements OnInit {
   datos = [];
   listaRegistros = [];
 
-  customColumn = 'Fecha';
-  defaultColumns = ['Minima', 'Media', 'Maxima'];
+  customColumn = 'fecha';
+  defaultColumns = ['minima', 'media', 'maxima'];
   allColumns = [this.customColumn, ...this.defaultColumns];
   cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
@@ -76,10 +76,10 @@ export class TablaRangoDiasComponent implements OnInit {
       var sumadas = tem.minima + tem.maxima;
       var media = sumadas / 2;
       var dato: FSEntry = {
-        Fecha: fecha,
-        Minima: tem.minima,
-        Media: media,
-        Maxima: tem.maxima,
+        fecha: fecha,
+        minima: tem.minima,
+        media: media,
+        maxima: tem.maxima,
         childEntries: []     
       };
       this.data.push(dato);
