@@ -20,12 +20,14 @@ interface FSEntry {
 })
 export class TablaRangoDiasComponent implements OnInit {
 
+  fechas = [];
   inicioRango = new Date();
   finRango = new Date();
-  registros: Registro[] = [];
+  datos = [];
+  listaRegistros = [];
 
-  customColumn = 'Fecha';
-  defaultColumns = ['Minima', 'Media', 'Maxima'];
+  customColumn = 'fecha';
+  defaultColumns = ['minima', 'media', 'maxima'];
   allColumns = [this.customColumn, ...this.defaultColumns];
   cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
@@ -43,28 +45,18 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   private data: FSEntry[] = [];
-  private ksi:  FSEntry[] = [
-    {
-      fecha: "la de hoy",
-      maxima: 12,
-      minima: 1,
-      media: 4
-    }
-  ]
   private dataClean: FSEntry[] = [];
 
   ngOnInit() {
   }
 
   updateTable(listaRegistros: Registro[]) {
-
-    //Limpiar tabla en caso de elegir otro rango
-    this.data = this.dataClean;
+    
+    this.data = this.dataClean; 
 
     var registros = listaRegistros;
     var aux_reg = new Registro();
 
-    //Ordenar por fechas
     for (let i = 0; i < registros.length; i++) {
       for (let j = 0; j < registros.length - 1; j++) {
         var reg1 = registros[j] as Registro;
@@ -77,23 +69,23 @@ export class TablaRangoDiasComponent implements OnInit {
       }
     }
 
-    //extraer datos
-    for (let index = 0; index < registros.length; index++) {
-      const registro = registros[index];
-      var temperatura = registro.Temperatura as Temperatura;
-      var sumadas = temperatura.minima + temperatura.maxima;
+    for (let i = 0; i < registros.length; i++) {
+      const registro = registros[i];
+      var tem = registro.Temperatura as Temperatura;
+      var fecha = `${registro.fecha}`;
+      var sumadas = tem.minima + tem.maxima;
       var media = sumadas / 2;
       var dato: FSEntry = {
-        fecha: `${registro.fecha}`,
-        minima: temperatura.minima,
+        fecha: fecha,
+        minima: tem.minima,
         media: media,
-        maxima: temperatura.maxima
+        maxima: tem.maxima,
+        childEntries: []     
       };
       this.data.push(dato);
     }
 
-    //reconstruir tabla
-    this.source = this.cast.create(this.ksi, this.getters);
+    this.source = this.cast.create(this.data, this.getters);
   }
 
   async selectedDate(event: any) {
@@ -110,10 +102,10 @@ export class TablaRangoDiasComponent implements OnInit {
     while (this.inicioRango.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.inicioRango;
-      this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
+      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
-        this.registros.push(registro);
-        this.updateTable(this.registros);        
+        this.listaRegistros.push(registro);
+        this.updateTable(this.listaRegistros);        
       });
       this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
