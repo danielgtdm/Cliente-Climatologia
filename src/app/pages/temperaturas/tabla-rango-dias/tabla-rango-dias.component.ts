@@ -5,10 +5,10 @@ import { Registro } from 'src/app/models/registro';
 import { Temperatura } from 'src/app/models/temperatura';
 
 interface FSEntry {
-  fecha: string;
-  minima: number;
-  media: number;
-  maxima: number;
+  Fecha: string;
+  Minima: number;
+  Media: number;
+  Maxima: number;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
