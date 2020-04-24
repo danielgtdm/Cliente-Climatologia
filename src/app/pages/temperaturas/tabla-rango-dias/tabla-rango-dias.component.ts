@@ -106,7 +106,7 @@ export class TablaRangoDiasComponent implements OnInit {
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
         this.registros.push(registro);
-        if ((this.inicioRango.getDate() - this.finRango.getDate()) == 0) {
+        if ((this.finRango.getDate() - this.inicioRango.getDate()) == 0) {
           this.updateTable(this.registros);
         }
       });
