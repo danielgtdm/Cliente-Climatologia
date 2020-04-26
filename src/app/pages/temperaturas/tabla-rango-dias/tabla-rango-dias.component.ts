@@ -107,16 +107,25 @@ export class TablaRangoDiasComponent implements OnInit {
 
   }
 
-  async getDataInRange() {
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
+  ordenarFechas(){
+    const cantidad = this.finRango.getDate() - this.inicioRango.getDate();
+    for (let i = 0; i < cantidad; i++) {
+      var fecha = this.inicioRango;
+      fecha.setDate(this.inicioRango.getDate() + i);
+      this.fechas.push(fecha);
+    }
+  }
+
+  getDataInRange() {
+    for (let index = 0; index < this.fechas.length; index++) {
+      const fecha = this.fechas[index];
       var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
+      regbyf.fecha = fecha;
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
         this.listaRegistros.push(registro);
         this.updateTable(this.listaRegistros);
       });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
     }
   }
 
