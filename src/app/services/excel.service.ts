@@ -13,7 +13,7 @@ export class ExcelService {
 
 
   private _url = "http://34.70.201.180:5000/api/excel";
-  ƒ
+  
 
   constructor(private http: HttpClient) { }
 
@@ -27,12 +27,12 @@ export class ExcelService {
       const reg = registros[index];
       const tem = registros[index].Temperatura;
       
-      data.push([
+      data.push(
         ["Fecha", reg.fecha],
         ["Minima", tem.minima],
         ["Maxima", tem.maxima],
         ["Media", ((tem.minima + tem.maxima)/2)]
-      ]);
+      );
 
     }
     
