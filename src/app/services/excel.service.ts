@@ -48,7 +48,13 @@ export class ExcelService {
     const subtitleRow = worksheet.addRow([]);
 
     const headerRow = worksheet.addRow([header]);
-    worksheet.addRows(data);
+    const row = worksheet.addRows(data);
+    row.border = {
+      top: {style:'thin'},
+      left: {style:'thin'},
+      bottom: {style:'thin'},
+      right: {style:'thin'}
+    };
     workbook.xlsx.writeBuffer().then((data: any) => {
       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob,'temperaturas.xlsx');
