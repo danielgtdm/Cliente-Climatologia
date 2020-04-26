@@ -50,12 +50,14 @@ export class ExcelService {
     const headerRow = worksheet.addRow([header]);
     data.forEach(rowData => {
       const row = worksheet.addRow(rowData);
-      row.border = {
-        top: {style:'thin'},
-        left: {style:'thin'},
-        bottom: {style:'thin'},
-        right: {style:'thin'}
-      }
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
     });
     //const row = worksheet.addRows(data);
 
