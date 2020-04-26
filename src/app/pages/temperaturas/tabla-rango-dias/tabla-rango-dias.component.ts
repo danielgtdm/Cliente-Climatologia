@@ -101,7 +101,9 @@ export class TablaRangoDiasComponent implements OnInit {
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.listaRegistros = this.vac;
+      this.fechas = [];
 
+      this.ordenarFechas();
       this.getDataInRange();
     }
 
