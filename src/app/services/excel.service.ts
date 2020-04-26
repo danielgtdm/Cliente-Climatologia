@@ -21,17 +21,20 @@ export class ExcelService {
   async generateExcel(registros: Registro[]) {
 
     const title = "Climatologia Matthei";
-    const header = ["X", "Y"];
+    const header = "TEMPERATURAS";
     var data = [];
+    data.push(["Fecha", "Minima", "Maxima", "Media"]);
     for (let index = 0; index < registros.length; index++) {
       const reg = registros[index];
       const tem = registros[index].Temperatura;
       
+      const fecha = reg.fecha.toString().substring(0, 9);
+      const minima = tem.minima;
+      const maxima = tem.maxima;
+      const media = ((tem.minima + tem.maxima)/2);
+
       data.push(
-        ["Fecha", reg.fecha],
-        ["Minima", tem.minima],
-        ["Maxima", tem.maxima],
-        ["Media", ((tem.minima + tem.maxima)/2)]
+        [fecha, minima, maxima, media]
       );
 
     }
