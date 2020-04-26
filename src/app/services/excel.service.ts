@@ -49,12 +49,14 @@ export class ExcelService {
 
     const headerRow = worksheet.addRow([header]);
     const row = worksheet.addRows(data);
-    row.border = {
-      top: {style:'thin'},
-      left: {style:'thin'},
-      bottom: {style:'thin'},
-      right: {style:'thin'}
-    };
+    row.eachCell((cell, number) => {
+      cell.border = {
+        top: {style:'thin'},
+        left: {style:'thin'},
+        bottom: {style:'thin'},
+        right: {style:'thin'}
+      }
+    });
     workbook.xlsx.writeBuffer().then((data: any) => {
       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob,'temperaturas.xlsx');
