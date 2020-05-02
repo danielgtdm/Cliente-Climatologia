@@ -113,7 +113,7 @@ export class TablaRangoDiasComponent implements OnInit {
         maxima: maxima
       });
     }
-
+    this.listaRegistros = registros;
     this.source = this.cast.create(data, this.getters);
 
   }
