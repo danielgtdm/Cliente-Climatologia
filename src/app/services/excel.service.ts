@@ -28,7 +28,7 @@ export class ExcelService {
       const reg = registros[index];
       const tem = registros[index].Temperatura;
       
-      const fecha = reg.fecha.toString().substring(0, 9);
+      const fecha = reg.fecha.toString().substring(0, 10);
       const minima = tem.minima;
       const maxima = tem.maxima;
       const media = ((tem.minima + tem.maxima)/2);
