@@ -25,9 +25,9 @@ export class TablaRangoDiasComponent implements OnInit {
   fechas = [];
   inicioRango = new Date();
   finRango = new Date();
-  datos = [];
+  data = [];
+  fechaBuscar = new Date();
   listaRegistros: Registro[] = [];
-  vac: Registro[] = [];
 
   customColumn = 'fecha';
   defaultColumns = ['minima', 'media', 'maxima'];
@@ -47,88 +47,76 @@ export class TablaRangoDiasComponent implements OnInit {
     this.getters = getters;
   }
 
-  private data: FSEntry[] = [];
-  private dataClean: FSEntry[] = [];
 
   ngOnInit() {
   }
 
+  
   exportar(){
     this.excelService.generateExcel(this.listaRegistros);
   }
 
-  updateTable(listaRegistros: Registro[]) {
-
-    this.data = this.dataClean;
-
-    var registros = listaRegistros;
-    var aux_reg = new Registro();
-
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
-    }
-
-    for (let i = 0; i < registros.length; i++) {
-      const registro = registros[i];
-      var tem = registro.Temperatura as Temperatura;
-      var fecha = `${registro.fecha}`;
-      var sumadas = tem.minima + tem.maxima;
-      var media = sumadas / 2;
-      var dato: FSEntry = {
-        fecha: fecha,
-        minima: tem.minima,
-        media: media,
-        maxima: tem.maxima,
-        childEntries: []
-      };
-      this.data.push(dato);
-    }
-
-    this.source = this.cast.create(this.data, this.getters);
-  }
 
   async selectedDate(event: any) {
 
     if (event.end != null) {
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
-      this.listaRegistros = this.vac;
-      this.fechas = [];
-
-      this.ordenarFechas();
       this.getDataInRange();
     }
 
   }
 
-  ordenarFechas(){
-    const cantidad = this.finRango.getDate() - this.inicioRango.getDate();
-    for (let i = 0; i < cantidad; i++) {
-      var fecha = this.inicioRango;
-      fecha.setDate(this.inicioRango.getDate() + i);
-      this.fechas.push(fecha);
-    }
-  }
+  async getDataInRange() {
 
-  getDataInRange() {
-    for (let index = 0; index < this.fechas.length; index++) {
-      const fecha = this.fechas[index];
+    this.fechaBuscar = this.inicioRango;
+    while(this.fechaBuscar.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
-      regbyf.fecha = fecha;
+      regbyf.fecha = this.fechaBuscar;
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
         var registro = r.payload as Registro;
         this.listaRegistros.push(registro);
-        this.updateTable(this.listaRegistros);
+        this.viewDataTable(this.listaRegistros);
       });
+      this.fechaBuscar.setDate((this.fechaBuscar.getDate() + 1));
     }
   }
+
+  viewDataTable(listaRegistros: Registro[]){
+    var registros = listaRegistros;
+    var aux_reg = new Registro();
+    var data: FSEntry[] = [];
+
+    for (let i = 0; i < registros.length; i++) {
+      for (let j = 0; j < registros.length - 1; j++) {
+        var reg1 = registros[j] as Registro;
+        var reg2 = registros[j +1] as Registro;
+        if(reg1.fecha > reg2.fecha){
+          aux_reg = registros[j];
+          registros[j] = registros[j + 1];
+          registros[j + 1] = aux_reg;
+        }        
+      }      
+    }
+
+    for (let i = 0; i < registros.length; i++) {
+      const registro = registros[i];
+      var tem = registro.Temperatura as Temperatura;
+      var fecha = `${registro.fecha}`;
+      var minima = tem.minima;
+      var maxima = tem.maxima;
+      var media = ((tem.minima + tem.maxima)/2);
+      data.push({
+        fecha: fecha,
+        minima: minima,
+        media: media,
+        maxima: maxima
+      });
+    }
+
+    this.source = this.cast.create(data, this.getters);
+
+  }
+
 
 }
