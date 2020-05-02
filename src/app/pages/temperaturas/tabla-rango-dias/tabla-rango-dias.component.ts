@@ -51,7 +51,7 @@ export class TablaRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
-  
+
   exportar(){
     this.excelService.generateExcel(this.listaRegistros);
   }
@@ -102,7 +102,7 @@ export class TablaRangoDiasComponent implements OnInit {
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
       var tem = registro.Temperatura as Temperatura;
-      var fecha = `${registro.fecha}`;
+      var fecha = `${registro.fecha.toString().substring(0, 9)}`;
       var minima = tem.minima;
       var maxima = tem.maxima;
       var media = ((tem.minima + tem.maxima)/2);
