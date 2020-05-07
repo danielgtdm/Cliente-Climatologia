@@ -7,7 +7,7 @@
         <div class="picker-center">
           <input nbInput placeholder="Selecciona un Rango" [nbDatepicker]="perrito" onfocus="blur();">
           <nb-rangepicker #perrito (rangeChange)="selectedDate($event)"></nb-rangepicker>
-          <button (click)="exportar()" nbButton>Exportar a Excel</button>
+          <button (click)="exportar()" nbButton status="basic">Exportar a Excel</button>
         </div>
       </div>
       <div class="row">
