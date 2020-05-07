@@ -11,6 +11,7 @@ import { TemperaturasRoutingModule } from './temperaturas-routing.module';
 import { NbCardModule } from '@nebular/theme';
 import { NbDatepickerModule } from '@nebular/theme';
 import { NbTreeGridModule } from '@nebular/theme';
+import {NbButtonModule} from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
 
@@ -28,7 +29,8 @@ import { ChartsModule } from 'ng2-charts';
     NbCardModule,
     NbDatepickerModule,
     ChartsModule,
-    NbTreeGridModule
+    NbTreeGridModule,
+    NbButtonModule
   ]
 })
 export class TemperaturasModule { }
