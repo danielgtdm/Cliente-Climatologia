@@ -5,6 +5,7 @@ import { Registro } from 'src/app/models/registro';
 import { Temperatura } from 'src/app/models/temperatura';
 
 import { ExcelService } from 'src/app/services/excel.service';
+import { CsvService } from 'src/app/services/csv.service';
 
 interface FSEntry {
   fecha: string;
@@ -36,7 +37,12 @@ export class TablaRangoDiasComponent implements OnInit {
   source: NbTreeGridDataSource<FSEntry>;
   getters: NbGetters<FSEntry, FSEntry>;
 
-  constructor(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, public registroService: RegistroService, public excelService: ExcelService) {
+  constructor(
+    dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
+    public registroService: RegistroService,
+    public excelService: ExcelService,
+    public csvService: CsvService
+  ) {
     const getters: NbGetters<FSEntry, FSEntry> = {
       dataGetter: (node: FSEntry) => node,
       childrenGetter: (node: FSEntry) => node.childEntries || undefined,
@@ -52,8 +58,12 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
 
-  exportar(){
+  exportarExcel() {
     this.excelService.generateExcel(this.listaRegistros);
+  }
+
+  exportarCSV() {
+    this.csvService.generateCSV(this.listaRegistros);
   }
 
 
@@ -70,7 +80,7 @@ export class TablaRangoDiasComponent implements OnInit {
   async getDataInRange() {
 
     this.fechaBuscar = this.inicioRango;
-    while(this.fechaBuscar.getDate() <= this.finRango.getDate()) {
+    while (this.fechaBuscar.getDate() <= this.finRango.getDate()) {
       var regbyf = new Registro();
       regbyf.fecha = this.fechaBuscar;
       this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
@@ -82,7 +92,7 @@ export class TablaRangoDiasComponent implements OnInit {
     }
   }
 
-  viewDataTable(listaRegistros: Registro[]){
+  viewDataTable(listaRegistros: Registro[]) {
     var registros = listaRegistros;
     var aux_reg = new Registro();
     var data: FSEntry[] = [];
@@ -90,13 +100,13 @@ export class TablaRangoDiasComponent implements OnInit {
     for (let i = 0; i < registros.length; i++) {
       for (let j = 0; j < registros.length - 1; j++) {
         var reg1 = registros[j] as Registro;
-        var reg2 = registros[j +1] as Registro;
-        if(reg1.fecha > reg2.fecha){
+        var reg2 = registros[j + 1] as Registro;
+        if (reg1.fecha > reg2.fecha) {
           aux_reg = registros[j];
           registros[j] = registros[j + 1];
           registros[j + 1] = aux_reg;
-        }        
-      }      
+        }
+      }
     }
 
     for (let i = 0; i < registros.length; i++) {
@@ -105,7 +115,7 @@ export class TablaRangoDiasComponent implements OnInit {
       var fecha = `${registro.fecha.toString().substring(0, 10)}`;
       var minima = tem.minima;
       var maxima = tem.maxima;
-      var media = ((tem.minima + tem.maxima)/2);
+      var media = ((tem.minima + tem.maxima) / 2);
       data.push({
         fecha: fecha,
         minima: minima,
