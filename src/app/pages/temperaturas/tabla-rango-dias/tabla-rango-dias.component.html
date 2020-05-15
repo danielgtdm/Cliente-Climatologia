@@ -1,39 +1,42 @@
 <nb-card>
-    <nb-card-header>
-      <h5 class="card-title">Tabla Temperaturas</h5>
-    </nb-card-header>
-    <nb-card-body>
-      <div class="row">
-        <div class="picker-center">
-          <input nbInput placeholder="Selecciona un Rango" [nbDatepicker]="perrito" onfocus="blur();">
-          <nb-rangepicker #perrito (rangeChange)="selectedDate($event)"></nb-rangepicker>
-          <button (click)="exportar()" nbButton status="basic">Exportar a Excel</button>
-        </div>
+  <nb-card-header>
+    <h5 class="card-title">Tabla Temperaturas</h5>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="picker-center">
+        <input nbInput placeholder="Selecciona un Rango" [nbDatepicker]="perrito" onfocus="blur();">
+        <nb-rangepicker #perrito (rangeChange)="selectedDate($event)"></nb-rangepicker>
       </div>
-      <div class="row">
-        <table [nbTreeGrid]="source">
-            <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
-            <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns"></tr>
-  
-            <ng-container [nbTreeGridColumnDef]="customColumn">
-              <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>{{customColumn}}</th>
-              <td nbTreeGridCell *nbTreeGridCellDef="let row">
-  
-                <nb-tree-grid-row-toggle
-                  [expanded]="row.expanded"
-                  *ngIf="row.data.fecha === 'dir'">
-                </nb-tree-grid-row-toggle>
-  
-                {{row.data[customColumn]}}
-  
-              </td>
-            </ng-container>
-  
-            <ng-container *ngFor="let column of defaultColumns" [nbTreeGridColumnDef]="column">
-              <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>{{column}}</th>
-              <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data[column] || '-'}}</td>
-            </ng-container>
-          </table>
+    </div>
+    <div class="row">
+      <div class="buttons-center">
+        <button (click)="exportarExcel()" nbButton status="basic">Exportar a Excel</button>
+        <button (click)="exportarCSV()" nbButton status="basic">Exportar a CSV</button>
       </div>
-    </nb-card-body>
-  </nb-card>
+    </div>
+    <div class="row">
+      <table [nbTreeGrid]="source">
+        <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
+        <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns"></tr>
+
+        <ng-container [nbTreeGridColumnDef]="customColumn">
+          <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>{{customColumn}}</th>
+          <td nbTreeGridCell *nbTreeGridCellDef="let row">
+
+            <nb-tree-grid-row-toggle [expanded]="row.expanded" *ngIf="row.data.fecha === 'dir'">
+            </nb-tree-grid-row-toggle>
+
+            {{row.data[customColumn]}}
+
+          </td>
+        </ng-container>
+
+        <ng-container *ngFor="let column of defaultColumns" [nbTreeGridColumnDef]="column">
+          <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>{{column}}</th>
+          <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data[column] || '-'}}</td>
+        </ng-container>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>
