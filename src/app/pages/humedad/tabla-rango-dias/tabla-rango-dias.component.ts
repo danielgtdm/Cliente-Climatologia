@@ -7,10 +7,10 @@ import { TermometroSeco } from 'src/app/models/termometro-seco';
 import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
 
 interface FSEntry {
-  fecha: string;
-  h0830: number;
-  h1400: number;
-  h1800: number;
+  'Fecha': string;
+  '08:30 hrs': number;
+  '14:00 hrs': number;
+  '18:00 hrs': number;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
@@ -53,6 +53,19 @@ export class TablaRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
+  getDateList(){
+    this.fechas = new Array();
+    var aux = this.inicioRango;
+    this.fechas.push([new Date(+aux)]);
+
+    do{
+      aux.setDate(aux.getDate() + 1);
+      this.fechas.push([new Date(+aux)]);
+    }while(aux < this.finRango)
+
+    return this.fechas;
+  }
+
   updateTable(listaRegistros: Registro[]) {
     
     //Limpiar tabla en caso de elegir otro rango
@@ -61,31 +74,18 @@ export class TablaRangoDiasComponent implements OnInit {
     var registros = listaRegistros;
     var aux_reg = new Registro();
   
-    //Ordenar por fechas
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
-    }
-  
     //extraer datos
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
       var th = registro.TermometroHumedo as TermometroHumedo;
       var ts = registro.TermometroSeco as TermometroSeco;
       var pa = registro.PresionAtmosferica as PresionAtmosferica;
-      var fecha = `${registro.fecha}`;
+      var fecha = `${registro.fecha.toString().substring(0, 10)}`;
       var dato: FSEntry = {
-        fecha: fecha,
-        h0830: this.getHumedadRelativa(th.h0830, ts.h0830, pa.h0830),
-        h1400: this.getHumedadRelativa(th.h1400, ts.h1400, pa.h1400),
-        h1800: this.getHumedadRelativa(th.h1800, ts.h1800, pa.h1800),
+        'Fecha': fecha,
+        '08:30 hrs': this.getHumedadRelativa(th.h0830, ts.h0830, pa.h0830),
+        '14:00 hrs': this.getHumedadRelativa(th.h1400, ts.h1400, pa.h1400),
+        '18:00 hrs': this.getHumedadRelativa(th.h1800, ts.h1800, pa.h1800),
         childEntries: []     
       };
       this.data.push(dato);
@@ -95,7 +95,7 @@ export class TablaRangoDiasComponent implements OnInit {
     this.source = this.cast.create(this.data, this.getters);
   }
   
-  async selectedDate(event: any) {
+  selectedDate(event: any) {
   
     if (event.end != null) {
       this.inicioRango = event.start as Date;
@@ -107,16 +107,24 @@ export class TablaRangoDiasComponent implements OnInit {
   
   
   async getDataInRange() {
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.updateTable(this.listaRegistros);        
+
+    this.listaRegistros = [];
+    var lista = this.getDateList();
+
+    for (let i = 0; i < lista.length; i++) {
+      const day = lista[i] as Date;
+      var reg = new Registro();
+      reg.fecha = day;
+      var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      .catch(err => {
+        alert( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
+
+      promesa ? 
+        this.listaRegistros.push(promesa.payload as Registro) : console.log('No se encuentra la fecha: ' + day)   
     }
+
+    this.updateTable(this.listaRegistros);        
   }
 
   getHumedadRelativa(th, ts, pa) {
@@ -124,7 +132,7 @@ export class TablaRangoDiasComponent implements OnInit {
 
     humedadRelativa = 100 * ((6.11 * Math.pow(10, ((7.5 * th) / (th + 237.3)))) - (0.5 * pa * (ts - th) / 755)) / (6.11 * Math.pow(10, ((7.5 * ts) / (ts + 237.3))));
 
-    return humedadRelativa;
+    return Math.round(humedadRelativa * 100) / 100; //Obtener redondeo a 2 decimales
   }
 
 
