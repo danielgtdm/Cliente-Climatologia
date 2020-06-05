@@ -23,7 +23,7 @@ interface FSEntry {
 })
 export class TablaRangoDiasComponent implements OnInit {
 
-  fechas = [];
+  fechas = new Array();
   inicioRango = new Date();
   finRango = new Date();
   data = [];
@@ -57,17 +57,37 @@ export class TablaRangoDiasComponent implements OnInit {
   ngOnInit() {
   }
 
+  getDateList(){
+    this.fechas = new Array();
+    var aux = this.inicioRango;
+    this.fechas.push([new Date(+aux)]);
+
+    do{
+      aux.setDate(aux.getDate() + 1);
+      this.fechas.push([new Date(+aux)]);
+    }while(aux < this.finRango)
+
+    return this.fechas;
+  }
 
   exportarExcel() {
-    this.excelService.generateExcel(this.listaRegistros);
+    if(this.listaRegistros.length == 0){
+      alert('Primero debes seleccionar un rango de fechas');
+    }else{
+      this.excelService.generateExcel(this.listaRegistros);
+    }
   }
 
   exportarCSV() {
-    this.csvService.generateCSV(this.listaRegistros);
+    if(this.listaRegistros.length == 0){
+      alert('Primero debes seleccionar un rango de fechas');
+    }else{
+      this.csvService.generateCSV(this.listaRegistros);
+    }
   }
 
 
-  async selectedDate(event: any) {
+  selectedDate(event: any) {
 
     if (event.end != null) {
       this.inicioRango = event.start as Date;
@@ -78,36 +98,28 @@ export class TablaRangoDiasComponent implements OnInit {
   }
 
   async getDataInRange() {
+    this.listaRegistros = [];
+    var lista = this.getDateList();
 
-    this.fechaBuscar = this.inicioRango;
-    while (this.fechaBuscar.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.fechaBuscar;
-      this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.viewDataTable(this.listaRegistros);
+    for (let i = 0; i < lista.length; i++) {
+      const day = lista[i] as Date;
+      var reg = new Registro();
+      reg.fecha = day;
+      var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      .catch(err => {
+        alert( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
-      this.fechaBuscar.setDate((this.fechaBuscar.getDate() + 1));
+
+      promesa ? 
+        this.listaRegistros.push(promesa.payload as Registro) : console.log('No se encuentra la fecha: ' + day)   
     }
+
+    this.viewDataTable(this.listaRegistros);
   }
 
   viewDataTable(listaRegistros: Registro[]) {
     var registros = listaRegistros;
-    var aux_reg = new Registro();
     var data: FSEntry[] = [];
-
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
-    }
 
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
@@ -123,9 +135,9 @@ export class TablaRangoDiasComponent implements OnInit {
         maxima: maxima
       });
     }
+
     this.listaRegistros = registros;
     this.source = this.cast.create(data, this.getters);
-
   }
 
 
