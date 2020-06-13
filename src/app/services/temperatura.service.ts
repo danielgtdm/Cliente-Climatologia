@@ -7,6 +7,12 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+var process : {
+  env: {
+    URL_API_SERVICES: string
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +20,8 @@ export class TemperaturaService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://34.70.201.180:5000/api/temperatura';
+  url = process.env.URL_API_SERVICES;
+  apiUrl = this.url + 'temperatura';
 
 async  getTemperatura(id: number){
     return await this.http.get(`${this.apiUrl}/${id}`);
