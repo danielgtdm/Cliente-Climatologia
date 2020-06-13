@@ -10,6 +10,12 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
+
+declare var process : {
+  env: {
+    "URL_API_SERVICES": string
+  }
+}
 export class RegistroService {
 
   constructor(private http: HttpClient) { }
