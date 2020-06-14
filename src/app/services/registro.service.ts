@@ -7,23 +7,15 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
-var process : {
-  env: {
-    URL_API_SERVICES: string
-  }
-}
-
 @Injectable({
   providedIn: 'root'
 })
-
-
 export class RegistroService {
 
   constructor(private http: HttpClient) { }
 
-  url = process.env.URL_API_SERVICES;
-  apiUrl = this.url + 'registro';
+
+  apiUrl = 'http://192.168.1.19:5000/api/registro';
 
  getRegistro(id: number): Observable<any>{   
     return this.http.get(`${this.apiUrl}/${id}`); 
