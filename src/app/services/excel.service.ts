@@ -12,7 +12,7 @@ import * as fs from 'file-saver';
 export class ExcelService {
 
 
-  private _url = "http://34.70.201.180:5000/api/excel";
+  private _url = "http://192.168.1.19:5000/api/excel";
   
 
   constructor(private http: HttpClient) { }
