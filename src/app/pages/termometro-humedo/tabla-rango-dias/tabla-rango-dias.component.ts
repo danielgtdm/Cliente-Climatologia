@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder } from '@nebular/theme';
-import { RegistroService } from 'src/app/services/registro.service';
+
 import { Registro } from 'src/app/models/registro';
 import { TermometroHumedo } from 'src/app/models/termometro-humedo';
 
+import { RegistroService } from 'src/app/services/registro.service';
+import { ExcelService} from 'src/app/services/excel.service';
+import { CsvService } from 'src/app/services/csv.service';
+
 interface FSEntry {
-  fecha: string;
-  h0830: number;
-  h1400: number;
-  h1800: number;
+  'Fecha': string;
+  '08:30 hrs': string;
+  '14:00 hrs': string;
+  '18:00 hrs': string;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
@@ -20,77 +24,64 @@ interface FSEntry {
 })
 export class TablaRangoDiasComponent implements OnInit {
 
-  fechas = [];
-  inicioRango = new Date();
-  finRango = new Date();
-  datos = [];
-  listaRegistros = [];
+  private fechas = new Array();
+  private inicioRango = new Date();
+  private finRango = new Date();
+  private listaRegistros: Registro[] = [];
 
   customColumn = 'Fecha';
   defaultColumns = ['08:30 hrs', '14:00 hrs', '18:00 hrs'];
   allColumns = [this.customColumn, ...this.defaultColumns];
-  cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
-  getters: NbGetters<FSEntry, FSEntry>;
+  getters: NbGetters<FSEntry, FSEntry> = {
+    dataGetter: (node: FSEntry) => node,
+    childrenGetter: (node: FSEntry) => node.childEntries || undefined,
+    expandedGetter: (node: FSEntry) => !!node.expanded,
+  };
 
-  constructor(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, public registroService: RegistroService) {
-    const getters: NbGetters<FSEntry, FSEntry> = {
-      dataGetter: (node: FSEntry) => node,
-      childrenGetter: (node: FSEntry) => node.childEntries || undefined,
-      expandedGetter: (node: FSEntry) => !!node.expanded,
-    };
-    this.source = dataSourceBuilder.create(this.data, getters);
-    this.cast = dataSourceBuilder;
-    this.getters = getters;
+  constructor(
+    private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, 
+    private registroService: RegistroService,
+    private excelService: ExcelService,
+    private csvService: CsvService
+    ) {
+    this.source = dataSourceBuilder.create([], this.getters);
   }
 
-  private data: FSEntry[] = [];
-  private dataClean: FSEntry[] = [];
 
   ngOnInit() {
   }
 
-  updateTable(listaRegistros: Registro[]) {
-    
-    //Limpiar tabla en caso de elegir otro rango
-    this.data = this.dataClean; 
+  private getDateList() {
+    this.fechas = new Array();
+    var aux = this.inicioRango;
+    this.fechas.push([new Date(+aux)]);
 
-    var registros = listaRegistros;
-    var aux_reg = new Registro();
+    do{
+      aux.setDate(aux.getDate() + 1);
+      this.fechas.push([new Date(+aux)]);
+    }while(aux < this.finRango)
 
-    //Ordenar por fechas
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
-    }
-
-    //extraer datos
-    for (let i = 0; i < registros.length; i++) {
-      const registro = registros[i];
-      var th = registro.TermometroHumedo as TermometroHumedo;
-      var fecha = `${registro.fecha}`;
-      var dato: FSEntry = {
-        fecha: fecha,
-        h0830: th.h0830,
-        h1400: th.h1400,
-        h1800: th.h1800,
-        childEntries: []     
-      };
-      this.data.push(dato);
-    }
-
-    //reconstruir tabla
-    this.source = this.cast.create(this.data, this.getters);
+    return this.fechas;
   }
 
-  async selectedDate(event: any) {
+  public exportarExcel() {
+    if(this.listaRegistros.length == 0){
+      alert('Primero debes seleccionar un rango de fechas');
+    }else{
+      //this.excelService.generateNubosidadExcel(this.listaRegistros);
+    }
+  }
+
+  public exportarCSV() {
+    if(this.listaRegistros.length == 0){
+      alert('Primero debes seleccionar un rango de fechas');
+    }else{
+      this.csvService.generateNubosidadCSV(this.listaRegistros);
+    }
+  }
+
+  public selectedDate(event: any) {
 
     if (event.end != null) {
       this.inicioRango = event.start as Date;
@@ -100,17 +91,53 @@ export class TablaRangoDiasComponent implements OnInit {
 
   }
 
-  async getDataInRange() {
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.updateTable(this.listaRegistros);        
+  private async getDataInRange() {
+    this.listaRegistros = [];
+    var lista = this.getDateList();
+
+    for (let i = 0; i < lista.length; i++) {
+      const day = lista[i] as Date;
+      var reg = new Registro();
+      reg.fecha = day;
+      var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      .catch(err => {
+        alert( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
+
+      promesa ? 
+        this.listaRegistros.push(promesa.payload as Registro) : this.listaRegistros.push(this.registroNoEncontrado());
     }
+
+    this.viewDataTable(this.listaRegistros);
+  }
+
+  private viewDataTable(listaRegistros: Registro[]) {
+    const registros = listaRegistros;
+    var data: FSEntry[] = [];
+
+    for (let i = 0; i < registros.length; i++) {
+      const registro = registros[i];
+
+      const termometroHumedo = registro.TermometroHumedo;
+      const fecha = registro.fecha ?
+        registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
+      data.push({
+        'Fecha': fecha,
+        '08:30 hrs': termometroHumedo.h0830 != null ? `${termometroHumedo.h0830}` : 'No Registrado',
+        '14:00 hrs': termometroHumedo.h1400 != null ? `${termometroHumedo.h1400}` : 'No Registrado',
+        '18:00 hrs': termometroHumedo.h1800 != null ? `${termometroHumedo.h1800}` : 'No Registrado'
+      });
+    }
+
+    this.source = this.dataSourceBuilder.create(data, this.getters);
+  }
+
+  private registroNoEncontrado() : Registro {
+    var registroNoEncontrado = new Registro();
+    registroNoEncontrado.TermometroHumedo = new TermometroHumedo();
+
+    return registroNoEncontrado;
   }
 
 }
