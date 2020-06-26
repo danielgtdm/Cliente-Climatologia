@@ -23,7 +23,7 @@ import { ChartsModule } from 'ng2-charts';
   GraficoRangoMesesComponent,
   GraficoRangoAniosComponent,
   TablaRangoDiasComponent
-],
+  ],
   imports: [
     CommonModule,
     HumedadRoutingModule,

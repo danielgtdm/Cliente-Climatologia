@@ -10,16 +10,27 @@ import { NbDatepickerModule,
   NbMenuModule,
   NbSidebarModule,
   NbToastrModule,
-  NbWindowModule, } from '@nebular/theme';
+  NbWindowModule,
+  NbCardModule,
+  NbSpinnerModule,
+  NbTreeGridModule,
+  NbButtonModule
+ } from '@nebular/theme';
+ 
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { ChartsModule } from 'ng2-charts';
 
 import { CoreModule } from './core/core.module';
 import { ThemeModule } from './theme/theme.module';
 
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from './pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ConsultandoComponent,
+    RegistrosNoEncontradosComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +46,15 @@ import { ThemeModule } from './theme/theme.module';
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
     ChartsModule,
-    HttpClientModule
+    HttpClientModule,
+    NbCardModule,
+    NbSpinnerModule,
+    NbTreeGridModule,
+    NbButtonModule
+  ],
+  entryComponents: [
+    ConsultandoComponent,
+    RegistrosNoEncontradosComponent
   ],
   providers: [],
   bootstrap: [AppComponent] 
