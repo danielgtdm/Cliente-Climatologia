@@ -12,7 +12,7 @@ import * as fs from 'file-saver';
 export class ExcelService {
 
 
-  private _url = "http://34.70.201.180:5000/api/excel";
+  private _url = "http://192.168.1.19:5000/api/excel";
   
 
   constructor(private http: HttpClient) { }
@@ -20,30 +20,32 @@ export class ExcelService {
 
   async generateExcel(registros: Registro[]) {
 
-    const title = "Climatologia Matthei";
+    const title = "Temperatura Climatologia Matthei";
     const header = "TEMPERATURAS";
     var data = [];
     data.push(["Fecha", "Minima", "Maxima", "Media"]);
     for (let index = 0; index < registros.length; index++) {
-      const reg = registros[index];
-      const tem = registros[index].Temperatura;
+      const registro = registros[index];
+
+      const temperatura = registro.Temperatura;
+      const fecha = registro.fecha.toString().substring(0, 10);
       
-      const fecha = reg.fecha.toString().substring(0, 10);
-      const minima = tem.minima;
-      const maxima = tem.maxima;
-      const media = ((tem.minima + tem.maxima)/2);
-
-      data.push(
-        [fecha, minima, maxima, media]
-      );
-
+      data.push([
+        fecha,
+        temperatura.minima ? temperatura.minima : 'No Registrado',
+        temperatura.maxima ? temperatura.maxima : 'No Registrado',
+        temperatura.minima && temperatura.maxima ? 
+          ((temperatura.minima + temperatura.maxima)/2) : 'No Calculado'
+      ]);
+      
+      
     }
     
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Estacion");
 
     const titleRow = worksheet.addRow([title]);
-    titleRow.font = { name: 'Comic Sans MS', family: 4, size: 16, underline: 'double', bold: true }
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
     worksheet.addRow([]);
     const subtitleRow = worksheet.addRow([]);
 
@@ -63,7 +65,7 @@ export class ExcelService {
 
     workbook.xlsx.writeBuffer().then((data: any) => {
       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob,'temperaturas.xlsx');
+      fs.saveAs(blob,'Temperatura_Estacion_Matthei.xlsx');
     });
   }
 

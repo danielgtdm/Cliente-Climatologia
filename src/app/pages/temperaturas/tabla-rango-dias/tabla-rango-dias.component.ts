@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder } from '@nebular/theme';
-import { RegistroService } from 'src/app/services/registro.service';
+
 import { Registro } from 'src/app/models/registro';
 import { Temperatura } from 'src/app/models/temperatura';
 
+import { RegistroService } from 'src/app/services/registro.service';
 import { ExcelService } from 'src/app/services/excel.service';
 import { CsvService } from 'src/app/services/csv.service';
 
 interface FSEntry {
-  fecha: string;
-  minima: number;
-  media: number;
-  maxima: number;
+  'Fecha': string;
+  'Minima': string;
+  'Maxima': string;
+  'Media': string;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
@@ -23,41 +24,35 @@ interface FSEntry {
 })
 export class TablaRangoDiasComponent implements OnInit {
 
-  fechas = new Array();
-  inicioRango = new Date();
-  finRango = new Date();
-  data = [];
-  fechaBuscar = new Date();
-  listaRegistros: Registro[] = [];
+  private fechas = new Array();
+  private inicioRango = new Date();
+  private finRango = new Date();
+  private listaRegistros: Registro[] = [];
 
-  customColumn = 'fecha';
-  defaultColumns = ['minima', 'media', 'maxima'];
+  customColumn = 'Fecha';
+  defaultColumns = ['Minima', 'Maxima', 'Media'];
   allColumns = [this.customColumn, ...this.defaultColumns];
-  cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
-  getters: NbGetters<FSEntry, FSEntry>;
+  getters: NbGetters<FSEntry, FSEntry> = {
+    dataGetter: (node: FSEntry) => node,
+    childrenGetter: (node: FSEntry) => node.childEntries || undefined,
+    expandedGetter: (node: FSEntry) => !!node.expanded,
+  };
 
   constructor(
-    dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
-    public registroService: RegistroService,
-    public excelService: ExcelService,
-    public csvService: CsvService
+    private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
+    private registroService: RegistroService,
+    private excelService: ExcelService,
+    private csvService: CsvService
   ) {
-    const getters: NbGetters<FSEntry, FSEntry> = {
-      dataGetter: (node: FSEntry) => node,
-      childrenGetter: (node: FSEntry) => node.childEntries || undefined,
-      expandedGetter: (node: FSEntry) => !!node.expanded,
-    };
-    this.source = dataSourceBuilder.create(this.data, getters);
-    this.cast = dataSourceBuilder;
-    this.getters = getters;
+    this.source = dataSourceBuilder.create([], this.getters);
   }
 
 
   ngOnInit() {
   }
 
-  getDateList(){
+  private getDateList() {
     this.fechas = new Array();
     var aux = this.inicioRango;
     this.fechas.push([new Date(+aux)]);
@@ -70,7 +65,7 @@ export class TablaRangoDiasComponent implements OnInit {
     return this.fechas;
   }
 
-  exportarExcel() {
+  public exportarExcel() {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{
@@ -78,16 +73,15 @@ export class TablaRangoDiasComponent implements OnInit {
     }
   }
 
-  exportarCSV() {
+  public exportarCSV() {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{
-      this.csvService.generateCSV(this.listaRegistros);
+      this.csvService.generateTemperaturaCSV(this.listaRegistros);
     }
   }
 
-
-  selectedDate(event: any) {
+  public selectedDate(event: any) {
 
     if (event.end != null) {
       this.inicioRango = event.start as Date;
@@ -97,7 +91,7 @@ export class TablaRangoDiasComponent implements OnInit {
 
   }
 
-  async getDataInRange() {
+  private async getDataInRange() {
     this.listaRegistros = [];
     var lista = this.getDateList();
 
@@ -111,34 +105,40 @@ export class TablaRangoDiasComponent implements OnInit {
       });
 
       promesa ? 
-        this.listaRegistros.push(promesa.payload as Registro) : console.log('No se encuentra la fecha: ' + day)   
+        this.listaRegistros.push(promesa.payload as Registro) : this.listaRegistros.push(this.registroNoEncontrado());   
     }
 
     this.viewDataTable(this.listaRegistros);
   }
 
-  viewDataTable(listaRegistros: Registro[]) {
-    var registros = listaRegistros;
+  private viewDataTable(listaRegistros: Registro[]) {
+    const registros = listaRegistros;
     var data: FSEntry[] = [];
 
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
-      var tem = registro.Temperatura as Temperatura;
-      var fecha = `${registro.fecha.toString().substring(0, 10)}`;
-      var minima = tem.minima;
-      var maxima = tem.maxima;
-      var media = ((tem.minima + tem.maxima) / 2);
+
+      const temperatura = registro.Temperatura;
+      const fecha = registro.fecha ?
+        registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+     
       data.push({
-        fecha: fecha,
-        minima: minima,
-        media: media,
-        maxima: maxima
+        'Fecha': fecha,
+        'Minima': temperatura.minima != null ? `${temperatura.minima}` : 'No Registrado',
+        'Maxima': temperatura.maxima != null ? `${temperatura.maxima}` : 'No Registrado',
+        'Media': temperatura.minima != null && temperatura.maxima != null ?
+          `${((temperatura.minima + temperatura.maxima) / 2)}` : 'No Calculado'
       });
     }
 
-    this.listaRegistros = registros;
-    this.source = this.cast.create(data, this.getters);
+    this.source = this.dataSourceBuilder.create(data, this.getters);
   }
 
+  private registroNoEncontrado() : Registro{
+    var registroNoEncontrado = new Registro();
+    registroNoEncontrado.Temperatura = new Temperatura();
+
+    return registroNoEncontrado;
+  }
 
 }

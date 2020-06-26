@@ -14,7 +14,7 @@ export class VisibilidadService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://34.70.201.180:5000/api/visibilidad';
+  apiUrl = 'http://192.168.1.19:5000/api/visibilidad';
 
 async getVisibilidad(id: number){
     return await this.http.get(`${this.apiUrl}/${id}`);

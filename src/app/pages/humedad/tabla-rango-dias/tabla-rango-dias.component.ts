@@ -1,16 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder } from '@nebular/theme';
-import { RegistroService } from 'src/app/services/registro.service';
+
+import { NbDialogService, } from '@nebular/theme';
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from 'src/app/pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
+
 import { Registro } from 'src/app/models/registro';
 import { TermometroHumedo } from 'src/app/models/termometro-humedo';
 import { TermometroSeco } from 'src/app/models/termometro-seco';
 import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
 
+import { RegistroService } from 'src/app/services/registro.service';
+import { CsvService } from 'src/app/services/csv.service';
+import { ExcelService } from 'src/app/services/excel.service';
+
 interface FSEntry {
   'Fecha': string;
-  '08:30 hrs': number;
-  '14:00 hrs': number;
-  '18:00 hrs': number;
+  '08:30 hrs': string;
+  '14:00 hrs': string;
+  '18:00 hrs': string;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
@@ -22,38 +30,38 @@ interface FSEntry {
 })
 export class TablaRangoDiasComponent implements OnInit {
   
-  fechas = [];
-  inicioRango = new Date();
-  finRango = new Date();
-  datos = [];
-  listaRegistros = [];
+  private fechas = new Array();
+  private inicioRango = new Date();
+  private finRango = new Date();
+  private listaRegistros: Registro[] = [];
+  private registrosNoEncontrados: Registro[] = [];
+  private dialogoConsulta;
 
   customColumn = 'Fecha';
   defaultColumns = ['08:30 hrs', '14:00 hrs', '18:00 hrs'];
   allColumns = [this.customColumn, ...this.defaultColumns];
-  cast: NbTreeGridDataSourceBuilder<FSEntry>;
   source: NbTreeGridDataSource<FSEntry>;
-  getters: NbGetters<FSEntry, FSEntry>;
-  
+  getters: NbGetters<FSEntry, FSEntry> = {
+    dataGetter: (node: FSEntry) => node,
+    childrenGetter: (node: FSEntry) => node.childEntries || undefined,
+    expandedGetter: (node: FSEntry) => !!node.expanded,
+  };
 
-  constructor(dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, public registroService: RegistroService) {
-    const getters: NbGetters<FSEntry, FSEntry> = {
-      dataGetter: (node: FSEntry) => node,
-      childrenGetter: (node: FSEntry) => node.childEntries || undefined,
-      expandedGetter: (node: FSEntry) => !!node.expanded,
-    };
-    this.source = dataSourceBuilder.create(this.data, getters);
-    this.cast = dataSourceBuilder;
-    this.getters = getters;
+  constructor(
+    private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
+    private dialogService: NbDialogService,
+    //protected dialogRef: NbDialogRef<any>,
+    private registroService: RegistroService,
+    private excelService: ExcelService,
+    private csvService: CsvService
+    ) {
+    this.source = dataSourceBuilder.create([], this.getters);
   }
   
-  private data: FSEntry[] = [];
-  private dataClean: FSEntry[] = [];
-
   ngOnInit() {
   }
 
-  getDateList(){
+  private getDateList() {
     this.fechas = new Array();
     var aux = this.inicioRango;
     this.fechas.push([new Date(+aux)]);
@@ -66,49 +74,36 @@ export class TablaRangoDiasComponent implements OnInit {
     return this.fechas;
   }
 
-  updateTable(listaRegistros: Registro[]) {
-    
-    //Limpiar tabla en caso de elegir otro rango
-    this.data = this.dataClean; 
-  
-    var registros = listaRegistros;
-    var aux_reg = new Registro();
-  
-    //extraer datos
-    for (let i = 0; i < registros.length; i++) {
-      const registro = registros[i];
-      var th = registro.TermometroHumedo as TermometroHumedo;
-      var ts = registro.TermometroSeco as TermometroSeco;
-      var pa = registro.PresionAtmosferica as PresionAtmosferica;
-      var fecha = `${registro.fecha.toString().substring(0, 10)}`;
-      var dato: FSEntry = {
-        'Fecha': fecha,
-        '08:30 hrs': this.getHumedadRelativa(th.h0830, ts.h0830, pa.h0830),
-        '14:00 hrs': this.getHumedadRelativa(th.h1400, ts.h1400, pa.h1400),
-        '18:00 hrs': this.getHumedadRelativa(th.h1800, ts.h1800, pa.h1800),
-        childEntries: []     
-      };
-      this.data.push(dato);
+  public exportarExcel() {
+    if(this.listaRegistros.length == 0){
+      alert('Primero debes seleccionar un rango de fechas');
+    }else{
+      //this.excelService.generateNubosidadExcel(this.listaRegistros);
     }
-  
-    //reconstruir tabla
-    this.source = this.cast.create(this.data, this.getters);
   }
-  
-  selectedDate(event: any) {
-  
+
+  public exportarHumedadCSV() {
+    if(this.listaRegistros.length == 0){
+      alert('Primero debes seleccionar un rango de fechas');
+    }else{
+      this.csvService.generateHumedadCSV(this.listaRegistros);
+    }
+  }
+
+  public selectedDate(event: any) {
+
     if (event.end != null) {
+      this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
     }
-  
-  }
-  
-  
-  async getDataInRange() {
 
+  }
+
+  private async getDataInRange() {
     this.listaRegistros = [];
+    this.registrosNoEncontrados = [];
     var lista = this.getDateList();
 
     for (let i = 0; i < lista.length; i++) {
@@ -117,25 +112,66 @@ export class TablaRangoDiasComponent implements OnInit {
       reg.fecha = day;
       var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
       .catch(err => {
-        alert( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
+        console.log( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
 
       promesa ? 
-        this.listaRegistros.push(promesa.payload as Registro) : console.log('No se encuentra la fecha: ' + day)   
+        this.listaRegistros.push(promesa.payload as Registro) : this.listaRegistros.push(this.registroNoEncontrado(reg));
     }
 
-    this.updateTable(this.listaRegistros);        
+    this.viewDataTable(this.listaRegistros);
   }
 
-  getHumedadRelativa(th, ts, pa) {
-    var humedadRelativa;
+  private viewDataTable(listaRegistros: Registro[]) {
+    const registros = listaRegistros;
+    var data: FSEntry[] = []; 
+
+    for (let i = 0; i < registros.length; i++) {
+      const registro = registros[i];
+
+      const termometroHumedo = registro.TermometroHumedo;
+      const termometroSeco = registro.TermometroSeco;
+      const presionAtmosferica = registro.PresionAtmosferica;
+      const fecha = registro.fecha ?
+        registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
+      data.push({
+        'Fecha': fecha,
+        '08:30 hrs': termometroHumedo.h0830 != null && termometroSeco.h0830 != null && presionAtmosferica.h0830 != null ?
+          `${this.getHumedadRelativa(termometroHumedo.h0830, termometroSeco.h0830, presionAtmosferica.h0830)}` : 'No Calculado',
+        '14:00 hrs': termometroHumedo.h1400 != null && termometroSeco.h1400 != null && presionAtmosferica.h1400 != null ?
+          `${this.getHumedadRelativa(termometroHumedo.h1400, termometroSeco.h1400, presionAtmosferica.h1400)}` : 'No Calculado',
+        '18:00 hrs': termometroHumedo.h1800 != null && termometroSeco.h1800 != null && presionAtmosferica.h1800 != null ?
+          `${this.getHumedadRelativa(termometroHumedo.h1800, termometroSeco.h1800, presionAtmosferica.h1800)}` : 'No Calculado'
+      });
+    }
+  
+    this.source = this.dataSourceBuilder.create(data, this.getters);
+    this.dialogoConsulta.close();
+    this.registrosNoEncontrados.length > 0 ? this.dialogoRegistrosNoEncontrados() : ()=>{} ;
+  }
+
+  private getHumedadRelativa(th: number, ts: number, pa: number): number {
+    var humedadRelativa : number;
 
     humedadRelativa = 100 * ((6.11 * Math.pow(10, ((7.5 * th) / (th + 237.3)))) - (0.5 * pa * (ts - th) / 755)) / (6.11 * Math.pow(10, ((7.5 * ts) / (ts + 237.3))));
 
     return Math.round(humedadRelativa * 100) / 100; //Obtener redondeo a 2 decimales
   }
 
+  private registroNoEncontrado(reg: Registro) : Registro {
+    this.registrosNoEncontrados.push(reg);
+    var registroNoEncontrado = new Registro();
+    registroNoEncontrado.TermometroHumedo = new TermometroHumedo();
+    registroNoEncontrado.TermometroSeco = new TermometroSeco();
+    registroNoEncontrado.PresionAtmosferica = new PresionAtmosferica();
 
+    return registroNoEncontrado;
+  }
+
+  private dialogoRegistrosNoEncontrados(){
+    this.dialogService.open(RegistrosNoEncontradosComponent, {context: { registros: this.registrosNoEncontrados}});
+  }
 
 }
 

@@ -6,6 +6,10 @@ import { RegistroService } from 'src/app/services/registro.service';
 import { Registro } from 'src/app/models/registro';
 import { Temperatura } from 'src/app/models/temperatura';
 
+import { NbDialogService } from '@nebular/theme';
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from 'src/app/pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
+
 @Component({
   selector: 'app-grafico-rango-dias',
   templateUrl: './grafico-rango-dias.component.html',
@@ -13,12 +17,14 @@ import { Temperatura } from 'src/app/models/temperatura';
 })
 export class GraficoRangoDiasComponent implements OnInit {
 
-  fechas = new Array();
-  inicioRango = new Date();
-  finRango = new Date();
+  private fechas = new Array();
+  private inicioRango = new Date();
+  private finRango = new Date();
   data = [];
   fechaBuscar = new Date();
   listaRegistros = [];
+  private registrosNoEncontrados: Registro[] = [];
+  private dialogoConsulta;
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Medias', yAxisID: 'y-axis-1' },
@@ -100,7 +106,10 @@ export class GraficoRangoDiasComponent implements OnInit {
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
-  constructor(public registroService: RegistroService) { }
+  constructor(
+    public registroService: RegistroService,
+    private dialogService: NbDialogService
+    ) { }
 
   ngOnInit() {
   }
@@ -130,6 +139,7 @@ export class GraficoRangoDiasComponent implements OnInit {
   async selectedDate(event: any) {
 
     if (event.end != null) {
+      this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
@@ -138,7 +148,7 @@ export class GraficoRangoDiasComponent implements OnInit {
 
 
   async getDataInRange() {
-
+    this.registrosNoEncontrados = [];
     this.listaRegistros = [];
     var lista = this.getDateList();
 
@@ -148,11 +158,11 @@ export class GraficoRangoDiasComponent implements OnInit {
       reg.fecha = day;
       var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
       .catch(err => {
-        alert( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
+        console.log( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
 
       promesa ? 
-        this.listaRegistros.push(promesa.payload as Registro) : console.log('No se encuentra la fecha: ' + day)   
+        this.listaRegistros.push(promesa.payload as Registro) : this.registrosNoEncontrados.push(reg);   
     }
     this.viewDataGraphincs(this.listaRegistros);
   }
@@ -189,8 +199,13 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
 
     this.chart.update();
-
+    this.dialogoConsulta.close();
+    
+    this.registrosNoEncontrados.length > 0 ?
+      this.dialogoRegistrosNoEncontrados() : ()=>{} ;
   }
 
-
+  private dialogoRegistrosNoEncontrados(){
+    this.dialogService.open(RegistrosNoEncontradosComponent, {context: { registros: this.registrosNoEncontrados}});
+  }
 }
