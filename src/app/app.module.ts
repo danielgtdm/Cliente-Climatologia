@@ -25,12 +25,14 @@ import { ThemeModule } from './theme/theme.module';
 
 import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
 import { RegistrosNoEncontradosComponent } from './pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
+import { EntrenandoComponent } from './pages/dialogs/entrenando/entrenando.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConsultandoComponent,
-    RegistrosNoEncontradosComponent
+    RegistrosNoEncontradosComponent,
+    EntrenandoComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +56,8 @@ import { RegistrosNoEncontradosComponent } from './pages/dialogs/registros-no-en
   ],
   entryComponents: [
     ConsultandoComponent,
-    RegistrosNoEncontradosComponent
+    RegistrosNoEncontradosComponent,
+    EntrenandoComponent
   ],
   providers: [],
   bootstrap: [AppComponent] 

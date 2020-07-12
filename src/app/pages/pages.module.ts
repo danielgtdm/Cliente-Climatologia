@@ -7,7 +7,9 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { ThemeModule } from '../theme/theme.module';
 
 @NgModule({
-  declarations: [PagesComponent],
+  declarations: [
+    PagesComponent
+  ],
   imports: [
     CommonModule,
     NbMenuModule,
