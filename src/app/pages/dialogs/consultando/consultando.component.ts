@@ -7,11 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConsultandoComponent implements OnInit {
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
   }
-
-  public title = '';
 
 }
