@@ -4,23 +4,27 @@ import * as tf from '@tensorflow/tfjs';
 import { NbDialogService } from '@nebular/theme';
 import { EntrenandoComponent } from 'src/app/pages/dialogs/entrenando/entrenando.component';
 
+import { TermometroHumedoService } from 'src/app/services/termometro-humedo.service';
+import { TermometroSecoService } from 'src/app/services/termometro-seco.service';
+import { PresionAtmosfericaService } from 'src/app/services/presion-atmosferica.service';
+import { RegistroService } from 'src/app/services/registro.service';
+
+import { Registro } from 'src/app/models/registro';
+import { TermometroHumedo } from 'src/app/models/termometro-humedo';
+import { TermometroSeco } from 'src/app/models/termometro-seco';
+import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
+import { reduce } from 'rxjs/operators';
 
 let h = 0;
 let m = 0;
 let s = 0;
 
-function onBatchEnd(batch, logs) {
-  console.log('Accuracy: ' + logs.acc);
-  Accuracy = logs.acc;
-}
-
-var Accuracy = 5.00002;
 
 // Generate some random fake data for demo purpose.
-const xs = tf.randomUniform([10000, 200]);
-const ys = tf.randomUniform([10000, 1]);
-const valXs = tf.randomUniform([1000, 200]);
-const valYs = tf.randomUniform([1000, 1]);
+//const xs = tf.randomUniform([10000, 200]);
+//const ys = tf.randomUniform([10000, 1]);
+//const valXs = tf.randomUniform([1000, 200]);
+//const valYs = tf.randomUniform([1000, 1]);
 
 @Component({
   selector: 'app-temperatura-tf',
@@ -29,52 +33,84 @@ const valYs = tf.randomUniform([1000, 1]);
 })
 export class TemperaturaTfComponent implements OnInit {
 
-  model = tf.sequential();
-  metric = 'accuracy';
-  loss = 'meanSquaredError';
-  optimizer = 'sgd';
-  epochs = 1;
-  batchSize = 1;
+  private model = tf.sequential();
+  private metric = '';
+  private loss = '';
+  private optimizer = '';
+  private epochs = 1;
+  private batchSize = 1;
 
-  public time = '00:00:00';
-  public accuracy;
-  public currentEpoch;
+  private trainData = [];
+  private trainLabel = [];
+  private validationData = [];
+  private validationLabel = [];
 
-  prediccion = '';
+  private time = '00:00:00';
+  private accuracy;
+  private currentEpoch;
+  private trainLoss;
+
+  private prediccion = '';
   private temperaturaArray: Array<any>;
-  csv;
-  real = '';
+  private csv;
+  private real = '';
   private dialogoConsulta;
-  modelCharged;
-  toPredict = tf.randomUniform([10000, 200]);
+  private modelCharged;
 
   constructor(
     private dialogService: NbDialogService,
-    private http: HttpClient
+    private http: HttpClient,
+    private registroService: RegistroService
   ) {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
 
-    this.http.get('temperaturas.csv', { responseType: 'text' })
-      .subscribe(
-        data => {
-          let csvToRowArray = data.split("\n");
-          for (let index = 1; index < csvToRowArray.length - 1; index++) {
-            let row = csvToRowArray[index].split(",");
-            this.temperaturaArray.push(row);
-          }
-          console.log(this.temperaturaArray);
-        },
-        error => {
-          console.log(error);
-        }
-      );
 
-    let onBatchEnd = (batch, logs) =>{
+
+    const inicioRango = new Date("01-01-1989");
+    const finRango = new Date("03-30-1989");
+
+    let fechas = new Array();
+    let listaRegistros: Registro[] = [];
+
+    let aux = inicioRango;
+    fechas.push([new Date(+aux)]);
+
+    do {
+      aux.setDate(aux.getDate() + 1);
+      fechas.push([new Date(+aux)]);
+    } while (aux < finRango)
+
+    for (let i = 0; i < fechas.length; i++) {
+      const day = fechas[i] as Date;
+      var reg = new Registro();
+      reg.fecha = day;
+      var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+        .catch(err => {
+          console.log('No se ha encontrado la fecha ' + day.toString().substring(0, 15));
+        });
+
+      promesa ?
+        listaRegistros.push(promesa.payload as Registro) : alert('error');
+    }
+
+    for (let index = 0; index < listaRegistros.length - 1; index++) {
+      const registro = listaRegistros[index];
+
+      //88 REGISTROS, 44 PARA ENTRENAMIENTO Y 44 PARA VALIDACION
+      if (index < 44) {
+        this.trainData.push(registro.TermometroSeco.h0830);
+        this.trainLabel.push(registro.TermometroHumedo.h0830);
+      } else {
+        this.validationData.push(registro.TermometroSeco.h0830);
+        this.validationLabel.push(registro.TermometroHumedo.h0830);
+      }
 
     }
+
+    alert('Listo para entrenar');
 
   }
 
@@ -106,30 +142,47 @@ export class TemperaturaTfComponent implements OnInit {
     this.dialogoConsulta = this.dialogService.open(EntrenandoComponent);
     this.reloadCrono();
 
-    this.model.add(tf.layers.dense({ units: 1, inputShape: [200] }));
+    this.model = tf.sequential();
+    this.model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
     this.model.compile({
       loss: this.loss,
       optimizer: this.optimizer,
       metrics: [this.metric]
     });
 
+    //TENSORES DE ENTRENAMIENTO
+    const tensorX = tf.tensor(this.trainData);
+    const tensorY = tf.tensor(this.trainLabel);
+
+    //TENSORES DE VALIDACION
+    const validationX = tf.tensor(this.validationData);
+    const validationY = tf.tensor(this.validationLabel);
+
+    tensorX.array().then(array => console.log('Train Tensor Data:' + array));
+    tensorY.array().then(array => console.log('Train Tensor Label:' + array));
+
+    alert('X tensor shape: ' + tensorX.shape);
+    alert('Y tensor shape: ' + tensorY.shape);
+
     this.prediccion = 'Entrenando'
-    await this.model.fit(xs, ys, {
+    await this.model.fit(tensorX, tensorY, {
       epochs: this.epochs,
       batchSize: this.batchSize,
-      validationData: [valXs, valYs],
+      validationData: [validationX, validationY],
       callbacks: {
-        onBatchEnd: (batch, logs)=>{
-          this.accuracy = logs.acc;
+        onBatchEnd: (batch, logs) => {
+          this.accuracy = logs.accuracy;
+          this.trainLoss = logs.loss;
+          //console.log(logs.acc);
         },
-        onEpochBegin: (epoch, logs)=>{
-          this.currentEpoch = epoch;
+        onEpochBegin: (epoch, logs) => {
+          this.currentEpoch = epoch + 1;
         }
       }
       // Add the tensorBoard callback here.
     }).then(info => {
-      this.accuracy = info.history.loss[0];
-    
+      let losses = info.history.loss as number[];
+      this.accuracy = losses.reduce((previous, current) => current += previous)/losses.length;
     });
     this.prediccion = 'Termino el entrenamiento';
     this.dialogoConsulta.close();
@@ -147,8 +200,9 @@ export class TemperaturaTfComponent implements OnInit {
       this.hacerlo() : alert('primero debes cargar un modelo');
   }
   hacerlo() {
-    this.real = ys.toString();
-    this.prediccion = this.modelCharged.predict(this.toPredict).toString()
+    tf.tensor(this.validationLabel).array().then(array => this.real = array.toString());
+    const tenPred = this.modelCharged.predict(tf.tensor(this.validationData));
+    tenPred.array().then(array => this.prediccion = array);
   }
 
   mostrar() {

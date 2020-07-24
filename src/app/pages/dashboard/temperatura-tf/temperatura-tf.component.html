@@ -8,8 +8,11 @@
   <nb-card-body>
     <form>
       <div class="container">
+
         <div class="row">
+
           <div class="col-md-6">
+
             <div class="row">
               <div class="col-md-2">
                 <p>Metric</p>
@@ -80,54 +83,66 @@
 
           <div class="col-md-6">
             <div class="row">
-                <div class="col-md-2">
-                    <p>Time: </p>
-                </div>
-                <div class="col-md-4">
-                    {{time}}
-                </div>
+              <div class="col-md-2">
+                <p>Time: </p>
+              </div>
+              <div class="col-md-4">
+                {{time}}
+              </div>
 
             </div>
 
             <div class="row">
-                <div class="col-md-2">
-                    <p>Accuracy: </p>
-                </div>
-                <div class="col-md-4">
-                    {{accuracy}}
-                </div>
+              <div class="col-md-2">
+                <p>Accuracy: </p>
+              </div>
+              <div class="col-md-4">
+                {{accuracy}}
+              </div>
 
             </div>
 
             <div class="row">
-                <div class="col-md-2">
-                    <p>Epoch: </p>
-                </div>
-                <div class="col-md-4">
-                    {{currentEpoch}}
-                </div>
+              <div class="col-md-2">
+                <p>Epoch: </p>
+              </div>
+              <div class="col-md-4">
+                {{currentEpoch}}
+              </div>
 
             </div>
 
+            <div class="row">
+              <div class="col-md-2">
+                <p>Train Loss: </p>
+              </div>
+              <div class="col-md-4">
+                {{trainLoss}}
+              </div>
+
+
+            </div>
 
           </div>
 
+
+
+
         </div>
-
-
-
-
       </div>
 
     </form>
-    <button (click)="train()" nbButton status="success">Entrenar</button>
+    <div class="row buttons-tf">
+      <button class="buttons-tf" (click)="train()" nbButton status="primary">Entrenar</button>
+      <button class="buttons-tf" (click)="predecir()" nbButton status="info">Predecir</button>
+      <button class="buttons-tf" (click)="guardar()" nbButton status="success">Guardar Modelo</button>
+      <button class="buttons-tf" (click)="cargar()" nbButton status="basic">Cargar Modelo</button>
+      <button class="buttons-tf" (click)="mostrar()" nbButton status="basic">Mostrar</button>
+    </div>
   </nb-card-body>
 </nb-card>
 
 <p>Prediccion: {{prediccion}}</p>
 <p>Real: {{real}}</p>
-<button (click)="predecir()">Predecir</button>
-<button (click)="guardar()">Guardar Modelo</button>
-<button (click)="cargar()">Cargar Modelo</button>
-<button (click)="mostrar()">Mostrar</button>
+
 <input type="file" (change)="csvFile($event.target.files)">
