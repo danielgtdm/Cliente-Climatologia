@@ -14,7 +14,7 @@ export class GeotermometroService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://192.168.1.19:5000/api/geotermometro';
+  apiUrl = 'http://localhost:5000/api/geotermometro';
 
 async  getGeotermometro(id: number){
     return await this.http.get(`${this.apiUrl}/${id}`);

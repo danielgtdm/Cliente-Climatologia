@@ -14,6 +14,7 @@ import { TermometroHumedo } from 'src/app/models/termometro-humedo';
 import { TermometroSeco } from 'src/app/models/termometro-seco';
 import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
 import { reduce } from 'rxjs/operators';
+import * as math from 'mathjs';
 
 let h = 0;
 let m = 0;
@@ -39,6 +40,10 @@ export class TemperaturaTfComponent implements OnInit {
   private optimizer = '';
   private epochs = 1;
   private batchSize = 1;
+  private trainMean;
+  private trainstdesv;
+  private validationMean;
+  private validationstdesv;
 
   private trainData = [];
   private trainLabel = [];
@@ -46,6 +51,7 @@ export class TemperaturaTfComponent implements OnInit {
   private validationLabel = [];
 
   private time = '00:00:00';
+  private runtime = false;
   private accuracy;
   private currentEpoch;
   private trainLoss;
@@ -110,6 +116,12 @@ export class TemperaturaTfComponent implements OnInit {
 
     }
 
+    this.trainMean = math.round(math.mean(this.trainData), 2);
+    this.validationMean = math.round(math.mean(this.validationData), 2);
+
+    this.trainstdesv = math.std(this.trainData).toFixed(2);
+    this.validationstdesv = math.std(this.validationData).toFixed(2);
+
     alert('Listo para entrenar');
 
   }
@@ -126,7 +138,9 @@ export class TemperaturaTfComponent implements OnInit {
     if (h < 10) { hAux = "0" + h; } else { hAux = h; }
 
     this.time = hAux + ":" + mAux + ":" + sAux;
-    setTimeout(() => { this.crono() }, 1000);
+    if(this.runtime){
+      setTimeout(() => { this.crono() }, 1000);
+    }
   }
 
   reloadCrono() {
@@ -139,6 +153,7 @@ export class TemperaturaTfComponent implements OnInit {
 
 
   async train() {
+    this.runtime = true;
     this.dialogoConsulta = this.dialogService.open(EntrenandoComponent);
     this.reloadCrono();
 
@@ -181,6 +196,7 @@ export class TemperaturaTfComponent implements OnInit {
       }
       // Add the tensorBoard callback here.
     }).then(info => {
+      this.runtime = false;
       let losses = info.history.loss as number[];
       this.accuracy = losses.reduce((previous, current) => current += previous)/losses.length;
     });

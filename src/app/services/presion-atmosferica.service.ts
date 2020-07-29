@@ -14,7 +14,7 @@ export class PresionAtmosfericaService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://192.168.1.19:5000/api/presion-atmosferica';
+  apiUrl = 'http://localhost:5000/api/presion-atmosferica';
 
 async  getPresionAtmosferica(id: number){
     return await this.http.get(`${this.apiUrl}/${id}`);

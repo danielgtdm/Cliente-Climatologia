@@ -14,7 +14,7 @@ export class DireccionVientoService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://192.168.1.19:5000/api/direccion-viento'; 
+  apiUrl = 'http://localhost:5000/api/direccion-viento'; 
 
  getDireccionViento(id: number): Observable<any>{
     return  this.http.get(`${this.apiUrl}/${id}`);

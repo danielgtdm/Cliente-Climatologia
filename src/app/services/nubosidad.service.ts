@@ -14,7 +14,7 @@ export class NubosidadService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://192.168.1.19:5000/api/nubosidad';
+  apiUrl = 'http://localhost:5000/api/nubosidad';
 
   getNubosidad(id: number): Observable<any>{
     return  this.http.get(`${this.apiUrl}/${id}`);

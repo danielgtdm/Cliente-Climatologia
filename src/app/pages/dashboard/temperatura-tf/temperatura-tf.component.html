@@ -123,6 +123,50 @@
 
             </div>
 
+            <div class="row">
+              <div class="col-md-2">
+                <p>Train Mean: </p>
+              </div>
+              <div class="col-md-4">
+                {{trainMean}}
+              </div>
+
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <p>Train STD: </p>
+              </div>
+              <div class="col-md-4">
+                {{trainstdesv}}
+              </div>
+
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <p>Validation Mean: </p>
+              </div>
+              <div class="col-md-4">
+                {{validationMean}}
+              </div>
+
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <p>Validation STD: </p>
+              </div>
+              <div class="col-md-4">
+                {{validationstdesv}}
+              </div>
+
+
+            </div>
+
           </div>
 
 
@@ -139,10 +183,13 @@
       <button class="buttons-tf" (click)="cargar()" nbButton status="basic">Cargar Modelo</button>
       <button class="buttons-tf" (click)="mostrar()" nbButton status="basic">Mostrar</button>
     </div>
+
+    <p>Prediccion: {{prediccion}}</p>
+    <p>Real: {{real}}</p>
+
   </nb-card-body>
 </nb-card>
 
-<p>Prediccion: {{prediccion}}</p>
-<p>Real: {{real}}</p>
+
 
 <input type="file" (change)="csvFile($event.target.files)">

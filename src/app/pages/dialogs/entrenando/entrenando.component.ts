@@ -29,7 +29,7 @@ export class EntrenandoComponent implements OnInit {
     h = 0;
     m = 0;
     s = 0;
-    this.crono();
+   // this.crono();
 
   }
   
