@@ -74,7 +74,7 @@ export class TablaRangoDiasComponent implements OnInit {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{
-      this.csvService.generateTemperaturaCSV(this.listaRegistros);
+      this.csvService.generateEvaporimetroCSV(this.listaRegistros);
     }
   }
 

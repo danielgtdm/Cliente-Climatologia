@@ -15,12 +15,12 @@ export class LayoutComponent implements AfterViewInit {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId,
-    private windowModeBlockScrollService: WindowModeBlockScrollService,
+    //private windowModeBlockScrollService: WindowModeBlockScrollService,
   ) {}
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.windowModeBlockScrollService.register(this.layout);
+      //this.windowModeBlockScrollService.register(this.layout);
     }
   }
 }

@@ -116,4 +116,36 @@ export class CsvService {
     return Math.round(humedadRelativa * 100) / 100; //Obtener redondeo a 2 decimales
   }
 
+  public generatePrecipitacionCSV(registros : Registro[]){
+
+  }
+
+  public generateEvaporimetroCSV(registros : Registro[]){
+
+  }
+
+  public generateGeotermometrosCSV(registros : Registro[]){
+
+  }
+
+  public generateHorasSolCSV(registros : Registro[]){
+
+  }
+
+  public generatePresionAtmosfericaCSV(registros : Registro[]){
+
+  }
+
+  public generateTermometroHumedoCSV(registros : Registro[]){
+
+  }
+  
+  public generateTermometroSecoCSV(registros : Registro[]){
+
+  }
+
+  public generateVisibilidadCSV(registros : Registro[]){
+
+  }
+
 }

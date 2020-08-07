@@ -50,7 +50,6 @@ export class TablaRangoDiasComponent implements OnInit {
   constructor(
     private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
     private dialogService: NbDialogService,
-    //protected dialogRef: NbDialogRef<any>,
     private registroService: RegistroService,
     private excelService: ExcelService,
     private csvService: CsvService
@@ -82,7 +81,7 @@ export class TablaRangoDiasComponent implements OnInit {
     }
   }
 
-  public exportarHumedadCSV() {
+  public exportarCSV() {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{

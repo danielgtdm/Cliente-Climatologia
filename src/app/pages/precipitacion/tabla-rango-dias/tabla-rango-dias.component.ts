@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder } from '@nebular/theme';
+import { NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder, NbDialogService } from '@nebular/theme';
+
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from 'src/app/pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
 
 import { Registro } from 'src/app/models/registro';
 
@@ -25,6 +28,8 @@ export class TablaRangoDiasComponent implements OnInit {
   private inicioRango = new Date();
   private finRango = new Date();
   private listaRegistros: Registro[] = [];
+  private registrosNoEncontrados: Registro[] = [];
+  private dialogoConsulta;
 
   customColumn = 'Fecha';
   defaultColumns = ['Agua Caida'];
@@ -37,7 +42,8 @@ export class TablaRangoDiasComponent implements OnInit {
   };
 
   constructor(
-    private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>, 
+    private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
+    private dialogService: NbDialogService,
     private registroService: RegistroService,
     private excelService: ExcelService,
     private csvService: CsvService
@@ -74,13 +80,14 @@ export class TablaRangoDiasComponent implements OnInit {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{
-      this.csvService.generateTemperaturaCSV(this.listaRegistros);
+      this.csvService.generatePrecipitacionCSV(this.listaRegistros);
     }
   }
 
   public selectedDate(event: any) {
 
     if (event.end != null) {
+      this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
@@ -90,6 +97,7 @@ export class TablaRangoDiasComponent implements OnInit {
 
   private async getDataInRange() {
     this.listaRegistros = [];
+    this.registrosNoEncontrados = [];
     var lista = this.getDateList();
 
     for (let i = 0; i < lista.length; i++) {
@@ -102,7 +110,7 @@ export class TablaRangoDiasComponent implements OnInit {
       });
 
       promesa ? 
-        this.listaRegistros.push(promesa.payload as Registro) : this.listaRegistros.push(this.registroNoEncontrado());   
+        this.listaRegistros.push(promesa.payload as Registro) : this.listaRegistros.push(this.registroNoEncontrado(reg));   
     }
 
     this.viewDataTable(this.listaRegistros);
@@ -126,12 +134,19 @@ export class TablaRangoDiasComponent implements OnInit {
     }
 
     this.source = this.dataSourceBuilder.create(data, this.getters);
+    this.dialogoConsulta.close();
+    this.registrosNoEncontrados.length > 0 ? this.dialogoRegistrosNoEncontrados() : ()=>{} ;
   }
 
-  private registroNoEncontrado() : Registro{
+  private registroNoEncontrado(reg: Registro) : Registro{
+    this.registrosNoEncontrados.push(reg);
     var registroNoEncontrado = new Registro();
 
     return registroNoEncontrado;
+  }
+
+  private dialogoRegistrosNoEncontrados(){
+    this.dialogService.open(RegistrosNoEncontradosComponent, {context: { registros: this.registrosNoEncontrados}});
   }
 
 }
