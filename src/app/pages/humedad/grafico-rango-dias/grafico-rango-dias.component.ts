@@ -170,7 +170,7 @@ async selectedDate(event: any) {
 
 
 
-  viewDataGraphics(listaRegistros: Registro[]) {
+  private viewDataGraphics(listaRegistros: Registro[]) {
     const registros = listaRegistros;
     let h0830 = [];
     let h1400 = [];

@@ -5,6 +5,10 @@ import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { RegistroService } from 'src/app/services/registro.service';
 import { Registro } from 'src/app/models/registro';
 
+import { NbDialogService } from '@nebular/theme';
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from 'src/app/pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
+
 @Component({
   selector: 'app-grafico-rango-dias',
   templateUrl: './grafico-rango-dias.component.html',
@@ -12,11 +16,14 @@ import { Registro } from 'src/app/models/registro';
 })
 export class GraficoRangoDiasComponent implements OnInit {
 
-  fechas = [];
-  inicioRango = new Date();
-  finRango = new Date();
-  data = [];
-  listaRegistros = [];
+  private fechas = [];
+  private inicioRango = new Date();
+  private finRango = new Date();
+  private data = [];
+  private fechaBuscar = new Date();
+  private listaRegistros = [];
+  private registrosNoEncontrados: Registro[] = [];
+  private dialogoConsulta;
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Precipitacion', yAxisID: 'y-axis-1' }
@@ -64,31 +71,14 @@ export class GraficoRangoDiasComponent implements OnInit {
     },
   };
   public lineChartColors: Color[] = [
-    { // media
+    { // precipitacion
       backgroundColor: 'rgba(0,131,0,0.5)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    },
-    { // maxima
-      backgroundColor: 'rgba(255,0,0,0.3)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    },
-    { // minima
-      backgroundColor: 'rgba(0,15,255,0.5)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(77,83,96,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(77,83,96,1)'
     }
-
   ];
   public lineChartLegend = true;
   public lineChartType = 'line';
@@ -96,18 +86,12 @@ export class GraficoRangoDiasComponent implements OnInit {
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
-  constructor(public registroService: RegistroService) { }
+  constructor(
+    public registroService: RegistroService,
+    private dialogService: NbDialogService
+  ) { }
 
   ngOnInit() {
-  }
-
-   async selectedDate(event: any){
-    
-    if(event.end != null){
-      this.inicioRango = event.start as Date;
-      this.finRango = event.end as Date;
-      this.getDataInRange();
-    }
   }
 
   // events
@@ -118,43 +102,61 @@ export class GraficoRangoDiasComponent implements OnInit {
   public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
     console.log(event, active);
   }
+  
+  getDateList(){
+    this.fechas = new Array();
+    var aux = this.inicioRango;
+    this.fechas.push([new Date(+aux)]);
 
-  async getDataInRange() {
+    do{
+      aux.setDate(aux.getDate() + 1);
+      this.fechas.push([new Date(+aux)]);
+    }while(aux < this.finRango)
 
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.viewDataGraphincs(this.listaRegistros);
-      });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
-    }
+    return this.fechas;
   }
 
-  viewDataGraphincs(listaRegistros : Registro[]) {
+async selectedDate(event: any) {
 
-    var registros = listaRegistros;
-    var aux_reg = new Registro();
-    var precipitaciones = [];
-    var labels = [];
-
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
+    if (event.end != null) {
+      this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
+      this.inicioRango = event.start as Date;
+      this.finRango = event.end as Date;
+      this.getDataInRange();
     }
+  }
+  
+  async getDataInRange() {
+    this.registrosNoEncontrados = [];
+    this.listaRegistros = [];
+    const lista = this.getDateList();
+
+    for (let i = 0; i < lista.length; i++){
+      const day = lista[i] as Date;
+      let reg = new Registro();
+      reg.fecha = day;
+      const promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      .catch(err => {
+	//handle errors
+      });
+
+      promesa ? 
+	this.listaRegistros.push(promesa.payload as Registro) : this.registrosNoEncontrados.push(reg);
+    }
+    this.viewDataGraphics(this.listaRegistros);
+  }
+
+
+
+    private viewDataGraphics(listaRegistros : Registro[]) {
+    const registros = listaRegistros;
+    let precipitaciones = [];
+    let labels = [];
 
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
-      precipitaciones.push(registro.agua_caida)
+      const precipitacion = registro.agua_caida;
+      precipitaciones.push(precipitacion);
       var fecha = `${registro.fecha}`;
       labels.push(fecha.substring(0, 10));
     }
@@ -167,8 +169,14 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
 
     this.chart.update();
+    this.dialogoConsulta.close();
 
+    this.registrosNoEncontrados.length > 0 ? 
+      this.dialogoRegistrosNoEncontrados() : ()=>{} ;
   }
 
+  private dialogoRegistrosNoEncontrados(){
+    this.dialogService.open(RegistrosNoEncontradosComponent, { context: { registros: this.registrosNoEncontrados}});
+  }
 
 }
