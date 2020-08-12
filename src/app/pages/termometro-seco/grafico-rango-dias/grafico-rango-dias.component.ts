@@ -6,6 +6,10 @@ import { RegistroService } from 'src/app/services/registro.service';
 import { Registro } from 'src/app/models/registro';
 import { TermometroSeco } from 'src/app/models/termometro-seco';
 
+import { NbDialogService } from '@nebular/theme';
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from 'src/app/pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
+
 @Component({
   selector: 'app-grafico-rango-dias',
   templateUrl: './grafico-rango-dias.component.html',
@@ -13,11 +17,14 @@ import { TermometroSeco } from 'src/app/models/termometro-seco';
 })
 export class GraficoRangoDiasComponent implements OnInit {
 
-  fechas = [];
-  inicioRango = new Date();
-  finRango = new Date();
-  data = [];
-  listaRegistros = [];
+  private fechas = [];
+  private inicioRango = new Date();
+  private finRango = new Date();
+  private data = [];
+  private fechaBuscar = new Date();
+  private listaRegistros = [];
+  private registrosNoEncontrados: Registro[] = [];
+  private dialogoConsulta;
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: '08:30 hrs', yAxisID: 'y-axis-1' },
@@ -67,7 +74,7 @@ export class GraficoRangoDiasComponent implements OnInit {
     },
   };
   public lineChartColors: Color[] = [
-    { // media
+    { // 08:30 hrs
       backgroundColor: 'rgba(0,131,0,0.5)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -75,7 +82,7 @@ export class GraficoRangoDiasComponent implements OnInit {
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
-    { // maxima
+    { // 14:00 hrs
       backgroundColor: 'rgba(255,0,0,0.3)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -83,7 +90,7 @@ export class GraficoRangoDiasComponent implements OnInit {
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
-    { // minima
+    { // 18:00 hrs
       backgroundColor: 'rgba(0,15,255,0.5)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(77,83,96,1)',
@@ -91,15 +98,18 @@ export class GraficoRangoDiasComponent implements OnInit {
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(77,83,96,1)'
     }
-
   ];
+
   public lineChartLegend = true;
   public lineChartType = 'line';
   public lineChartPlugins = [pluginAnnotations];
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
-  constructor(public registroService: RegistroService) { }
+  constructor(
+    public registroService: RegistroService,
+    private dialogService: NbDialogService
+  ) { }
 
   ngOnInit() {
   }
@@ -113,54 +123,61 @@ export class GraficoRangoDiasComponent implements OnInit {
     console.log(event, active);
   }
 
+  private getDateList(){
+    this.fechas = new Array();
+    var aux = this.inicioRango;
+    this.fechas.push([new Date(+aux)]);
+
+    do{
+      aux.setDate(aux.getDate() + 1);
+      this.fechas.push([new Date(+aux)]);
+    }while(aux < this.finRango)
+
+    return this.fechas;
+  }
+
   async selectedDate(event: any) {
 
     if (event.end != null) {
+      this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
     }
   }
-
+  
   async getDataInRange() {
+    this.registrosNoEncontrados = [];
+    this.listaRegistros = [];
+    const lista = this.getDateList();
 
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.viewDataGraphincs(this.listaRegistros);
+    for (let i = 0; i < lista.length; i++){
+      const day = lista[i] as Date;
+      let reg = new Registro();
+      reg.fecha = day;
+      const promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      .catch(err => {
+	//handle errors
       });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
+
+      promesa ? 
+	this.listaRegistros.push(promesa.payload as Registro) : this.registrosNoEncontrados.push(reg);
     }
+    this.viewDataGraphics(this.listaRegistros);
   }
 
-  viewDataGraphincs(listaRegistros: Registro[]) {
 
-    var registros = listaRegistros;
-    var aux_reg = new Registro();
-    var h0830 = [];
-    var h1400 = [];
-    var h1800 = [];
-    var labels = [];
+  private viewDataGraphics(listaRegistros: Registro[]) {
+    const registros = listaRegistros;
+    let h0830 = [];
+    let h1400 = [];
+    let h1800 = [];
+    let labels = [];
 
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
-    }
-
-    for (let i = 0; i < registros.length; i++) {
+   for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
-      var ts = registro.TermometroSeco as TermometroSeco;
-      var fecha = `${registro.fecha}`;
+      const ts = registro.TermometroSeco as TermometroSeco;
+      const fecha = `${registro.fecha}`;
       h0830.push(ts.h0830);
       h1400.push(ts.h1400);
       h1800.push(ts.h1800);
@@ -181,7 +198,14 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
 
     this.chart.update();
+    this.dialogoConsulta.close();
 
+    this.registrosNoEncontrados.length > 0 ? 
+      this.dialogoRegistrosNoEncontrados() : ()=>{} ;
+  }
+
+  private dialogoRegistrosNoEncontrados(){
+    this.dialogService.open(RegistrosNoEncontradosComponent, { context: { registros: this.registrosNoEncontrados}});
   }
 
 

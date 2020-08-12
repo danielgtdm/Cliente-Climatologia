@@ -6,6 +6,9 @@ import { RegistroService } from 'src/app/services/registro.service';
 import { Registro } from 'src/app/models/registro';
 import { Geotermometro } from 'src/app/models/geotermometro';
 
+import { NbDialogService } from '@nebular/theme';
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from 'src/app/pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
 
 @Component({
   selector: 'app-grafico-rango-dias',
@@ -14,11 +17,14 @@ import { Geotermometro } from 'src/app/models/geotermometro';
 })
 export class GraficoRangoDiasComponent implements OnInit {
 
-  fechas = [];
-  inicioRango = new Date();
-  finRango = new Date();
-  data = [];
-  listaRegistros = [];
+  private fechas = [];
+  private inicioRango = new Date();
+  private finRango = new Date();
+  private data = [];
+  private fechaBuscar = new Date();
+  private listaRegistros = [];
+  private registrosNoEncontrados: Registro[] = [];
+  private dialogoConsulta;
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: '2cm', yAxisID: 'y-axis-1' },
@@ -128,15 +134,18 @@ export class GraficoRangoDiasComponent implements OnInit {
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(77,83,96,1)'
     }
-
   ];
+
   public lineChartLegend = true;
   public lineChartType = 'line';
   public lineChartPlugins = [pluginAnnotations];
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
-  constructor(public registroService: RegistroService) { }
+  constructor(
+    public registroService: RegistroService,
+    private dialogService: NbDialogService
+  ) { }
 
   ngOnInit() {
   }
@@ -150,58 +159,65 @@ export class GraficoRangoDiasComponent implements OnInit {
     console.log(event, active);
   }
 
+  private getDateList(){
+    this.fechas = new Array();
+    var aux = this.inicioRango;
+    this.fechas.push([new Date(+aux)]);
+
+    do{
+      aux.setDate(aux.getDate() + 1);
+      this.fechas.push([new Date(+aux)]);
+    }while(aux < this.finRango)
+
+    return this.fechas;
+  }
+
   async selectedDate(event: any) {
 
     if (event.end != null) {
+      this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
       this.inicioRango = event.start as Date;
       this.finRango = event.end as Date;
       this.getDataInRange();
     }
   }
-
+  
   async getDataInRange() {
+    this.registrosNoEncontrados = [];
+    this.listaRegistros = [];
+    const lista = this.getDateList();
 
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.viewDataGraphincs(this.listaRegistros);
+    for (let i = 0; i < lista.length; i++){
+      const day = lista[i] as Date;
+      let reg = new Registro();
+      reg.fecha = day;
+      const promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      .catch(err => {
+	//handle errors
       });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
+
+      promesa ? 
+	this.listaRegistros.push(promesa.payload as Registro) : this.registrosNoEncontrados.push(reg);
     }
+    this.viewDataGraphics(this.listaRegistros);
   }
 
-  viewDataGraphincs(listaRegistros: Registro[]) {
 
-    var registros = listaRegistros;
-    var aux_reg = new Registro();
-    var cm2 = [];
-    var cm5 = [];
-    var cm10 = [];
-    var cm20 = [];
-    var cm30 = [];
-    var cm50 = [];
-    var cm100 = [];
-    var labels = [];
-
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
-    }
+  private viewDataGraphics(listaRegistros: Registro[]) {
+    const registros = listaRegistros;
+    let cm2 = [];
+    let cm5 = [];
+    let cm10 = [];
+    let cm20 = [];
+    let cm30 = [];
+    let cm50 = [];
+    let cm100 = [];
+    let labels = [];
 
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
-      var geotermometro = registro.Geotermometro as Geotermometro;
-      var fecha = `${registro.fecha}`;
+      const geotermometro = registro.Geotermometro as Geotermometro;
+      const fecha = `${registro.fecha}`;
       cm2.push(geotermometro.cm2);
       cm5.push(geotermometro.cm5);
       cm10.push(geotermometro.cm10);
@@ -238,7 +254,14 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
 
     this.chart.update();
+    this.dialogoConsulta.close();
 
+    this.registrosNoEncontrados.length > 0 ? 
+      this.dialogoRegistrosNoEncontrados() : ()=>{} ;
+  }
+
+  private dialogoRegistrosNoEncontrados(){
+    this.dialogService.open(RegistrosNoEncontradosComponent, { context: { registros: this.registrosNoEncontrados}});
   }
 
 
