@@ -20,9 +20,9 @@ export class GraficoRangoDiasComponent implements OnInit {
   private fechas = new Array();
   private inicioRango = new Date();
   private finRango = new Date();
-  data = [];
-  fechaBuscar = new Date();
-  listaRegistros = [];
+  private data = [];
+  private fechaBuscar = new Date();
+  private listaRegistros = [];
   private registrosNoEncontrados: Registro[] = [];
   private dialogoConsulta;
 
@@ -107,7 +107,7 @@ export class GraficoRangoDiasComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
   constructor(
-    public registroService: RegistroService,
+    private registroService: RegistroService,
     private dialogService: NbDialogService
     ) { }
 
@@ -146,42 +146,40 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
   }
 
-
   async getDataInRange() {
     this.registrosNoEncontrados = [];
     this.listaRegistros = [];
-    var lista = this.getDateList();
+    const lista = this.getDateList();
 
     for (let i = 0; i < lista.length; i++) {
       const day = lista[i] as Date;
-      var reg = new Registro();
+      let reg = new Registro();
       reg.fecha = day;
-      var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      const promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
       .catch(err => {
-        console.log( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
+        //handle errors
       });
 
       promesa ? 
         this.listaRegistros.push(promesa.payload as Registro) : this.registrosNoEncontrados.push(reg);   
     }
-    this.viewDataGraphincs(this.listaRegistros);
+    this.viewDataGraphics(this.listaRegistros);
   }
 
-  viewDataGraphincs(listaRegistros: Registro[]) {
-    var registros = listaRegistros;
-    var minimas = [];
-    var maximas = [];
-    var medias = [];
-    var labels = [];
+  viewDataGraphics(listaRegistros: Registro[]) {
+    const registros = listaRegistros;
+    let minimas = [];
+    let maximas = [];
+    let medias = [];
+    let labels = [];
 
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
-      var tem = registro.Temperatura as Temperatura;
-      var fecha = `${registro.fecha}`;
+      const tem = registro.Temperatura as Temperatura;
+      const fecha = `${registro.fecha}`;
       minimas.push(tem.minima);
       maximas.push(tem.maxima);
-      var sumadas = tem.minima + tem.maxima;
-      medias.push(sumadas/2);
+      medias.push((tem.minima + tem.maxima)/2);
       labels.push(fecha.substring(0, 10));
     }
 

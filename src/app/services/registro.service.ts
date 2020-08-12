@@ -15,7 +15,7 @@ export class RegistroService {
   constructor(private http: HttpClient) { }
 
 
-  apiUrl = 'http://localhost:5000/api/registro';
+  apiUrl = 'http://192.168.1.108:5000/api/registro';
 
  getRegistro(id: number): Observable<any>{   
     return this.http.get(`${this.apiUrl}/${id}`); 

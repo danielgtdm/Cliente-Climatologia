@@ -8,6 +8,10 @@ import { TermometroHumedo } from 'src/app/models/termometro-humedo';
 import { TermometroSeco } from 'src/app/models/termometro-seco';
 import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
 
+import { NbDialogService } from '@nebular/theme';
+import { ConsultandoComponent } from 'src/app/pages/dialogs/consultando/consultando.component';
+import { RegistrosNoEncontradosComponent } from 'src/app/pages/dialogs/registros-no-encontrados/registros-no-encontrados.component';
+
 @Component({
   selector: 'app-grafico-rango-dias',
   templateUrl: './grafico-rango-dias.component.html',
@@ -15,11 +19,14 @@ import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
 })
 export class GraficoRangoDiasComponent implements OnInit {
 
-  fechas = [];
-  inicioRango = new Date();
-  finRango = new Date();
-  data = [];
-  listaRegistros = [];
+  private fechas = [];
+  private inicioRango = new Date();
+  private finRango = new Date();
+  private data = [];
+  private fechaBuscar = new Date();
+  private listaRegistros = [];
+  private registrosNoEncontrados: Registro[] = [];
+  private dialogoConsulta;
 
   public lineChartData: ChartDataSets[] = [
     { data: [], label: '08:30 hrs', yAxisID: 'y-axis-1' },
@@ -69,7 +76,7 @@ export class GraficoRangoDiasComponent implements OnInit {
     },
   };
   public lineChartColors: Color[] = [
-    { // media
+    { // 08:30 hrs
       backgroundColor: 'rgba(0,131,0,0.5)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -77,7 +84,7 @@ export class GraficoRangoDiasComponent implements OnInit {
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
-    { // maxima
+    { // 14:00 hrs
       backgroundColor: 'rgba(255,0,0,0.3)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -85,7 +92,7 @@ export class GraficoRangoDiasComponent implements OnInit {
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
-    { // minima
+    { // 18:00 hrs
       backgroundColor: 'rgba(0,15,255,0.5)',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(77,83,96,1)',
@@ -101,18 +108,12 @@ export class GraficoRangoDiasComponent implements OnInit {
 
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
-  constructor(public registroService: RegistroService) { }
+  constructor(
+    private registroService: RegistroService,
+    private dialogService: NbDialogService
+  ) { }
 
   ngOnInit() {
-  }
-
-  async selectedDate(event: any) {
-
-    if (event.end != null) {
-      this.inicioRango = event.start as Date;
-      this.finRango = event.end as Date;
-      this.getDataInRange();
-    }
   }
 
   // events
@@ -123,57 +124,65 @@ export class GraficoRangoDiasComponent implements OnInit {
   public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
     console.log(event, active);
   }
+ 
+  getDateList(){
+    this.fechas = new Array();
+    var aux = this.inicioRango;
+    this.fechas.push([new Date(+aux)]);
 
-  getHumedadRelativa(th, ts, pa) {
-    var humedadRelativa;
+    do{
+      aux.setDate(aux.getDate() + 1);
+      this.fechas.push([new Date(+aux)]);
+    }while(aux < this.finRango)
 
-    humedadRelativa = 100 * ((6.11 * Math.pow(10, ((7.5 * th) / (th + 237.3)))) - (0.5 * pa * (ts - th) / 755)) / (6.11 * Math.pow(10, ((7.5 * ts) / (ts + 237.3))));
-
-    return humedadRelativa;
+    return this.fechas;
   }
 
+async selectedDate(event: any) {
 
+    if (event.end != null) {
+      this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
+      this.inicioRango = event.start as Date;
+      this.finRango = event.end as Date;
+      this.getDataInRange();
+    }
+  }
+  
   async getDataInRange() {
+    this.registrosNoEncontrados = [];
+    this.listaRegistros = [];
+    const lista = this.getDateList();
 
-    while (this.inicioRango.getDate() <= this.finRango.getDate()) {
-      var regbyf = new Registro();
-      regbyf.fecha = this.inicioRango;
-      await this.registroService.getRegistroByFecha(regbyf).subscribe(r => {
-        var registro = r.payload as Registro;
-        this.listaRegistros.push(registro);
-        this.viewDataGraphincs(this.listaRegistros);  
+    for (let i = 0; i < lista.length; i++){
+      const day = lista[i] as Date;
+      let reg = new Registro();
+      reg.fecha = day;
+      const promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      .catch(err => {
+	//handle errors
       });
-      this.inicioRango.setDate((this.inicioRango.getDate() + 1));
+
+      promesa ? 
+	this.listaRegistros.push(promesa.payload as Registro) : this.registrosNoEncontrados.push(reg);
     }
+    this.viewDataGraphics(this.listaRegistros);
   }
 
-  viewDataGraphincs(listaRegistros: Registro[]) {
 
-    var registros = listaRegistros;
-    var aux_reg = new Registro();
-    var h0830 = [];
-    var h1400 = [];
-    var h1800 = [];
-    var labels = [];
 
-    for (let i = 0; i < registros.length; i++) {
-      for (let j = 0; j < registros.length - 1; j++) {
-        var reg1 = registros[j] as Registro;
-        var reg2 = registros[j + 1] as Registro;
-        if (reg1.fecha > reg2.fecha) {
-          aux_reg = registros[j];
-          registros[j] = registros[j + 1];
-          registros[j + 1] = aux_reg;
-        }
-      }
-    }
+  viewDataGraphics(listaRegistros: Registro[]) {
+    const registros = listaRegistros;
+    let h0830 = [];
+    let h1400 = [];
+    let h1800 = [];
+    let labels = [];
 
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
-      var th = registro.TermometroHumedo as TermometroHumedo;
-      var ts = registro.TermometroSeco as TermometroSeco;
-      var pa = registro.PresionAtmosferica as PresionAtmosferica;
-      var fecha = `${registro.fecha}`;
+      const th = registro.TermometroHumedo as TermometroHumedo;
+      const ts = registro.TermometroSeco as TermometroSeco;
+      const pa = registro.PresionAtmosferica as PresionAtmosferica;
+      const fecha = `${registro.fecha}`;
       h0830.push(this.getHumedadRelativa(th.h0830, ts.h0830, pa.h0830));
       h1400.push(this.getHumedadRelativa(th.h1400, ts.h1400, pa.h1400));
       h1800.push(this.getHumedadRelativa(th.h1800, ts.h1800, pa.h1800));
@@ -195,7 +204,22 @@ export class GraficoRangoDiasComponent implements OnInit {
     }
 
     this.chart.update();
+    this.dialogoConsulta.close();
 
+    this.registrosNoEncontrados.length > 0 ? 
+      this.dialogoRegistrosNoEncontrados() : ()=>{} ;
+  }
+
+  private dialogoRegistrosNoEncontrados(){
+    this.dialogService.open(RegistrosNoEncontradosComponent, { context: { registros: this.registrosNoEncontrados}});
+  }
+
+  private getHumedadRelativa(th, ts, pa) {
+    var humedadRelativa;
+
+    humedadRelativa = 100 * ((6.11 * Math.pow(10, ((7.5 * th) / (th + 237.3)))) - (0.5 * pa * (ts - th) / 755)) / (6.11 * Math.pow(10, ((7.5 * ts) / (ts + 237.3))));
+
+    return humedadRelativa;
   }
 
 

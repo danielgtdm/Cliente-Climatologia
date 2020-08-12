@@ -14,7 +14,7 @@ export class TemperaturaService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl = 'http://localhost:5000/api/temperatura';
+  apiUrl = 'http://192.168.1.108:5000/api/temperatura';
 
 async  getTemperatura(id: number){
     return await this.http.get(`${this.apiUrl}/${id}`);
