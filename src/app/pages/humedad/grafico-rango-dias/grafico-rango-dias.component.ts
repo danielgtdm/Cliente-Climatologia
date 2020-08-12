@@ -125,7 +125,7 @@ export class GraficoRangoDiasComponent implements OnInit {
     console.log(event, active);
   }
  
-  getDateList(){
+  private getDateList(){
     this.fechas = new Array();
     var aux = this.inicioRango;
     this.fechas.push([new Date(+aux)]);
@@ -138,7 +138,7 @@ export class GraficoRangoDiasComponent implements OnInit {
     return this.fechas;
   }
 
-async selectedDate(event: any) {
+  async selectedDate(event: any) {
 
     if (event.end != null) {
       this.dialogoConsulta = this.dialogService.open(ConsultandoComponent);
