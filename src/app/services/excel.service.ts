@@ -1,28 +1,24 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Router } from '@angular/router'
+import { HttpClient } from '@angular/common/http'
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { Registro } from 'src/app/models/registro';
 import * as fs from 'file-saver';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExcelService {
 
-
-  private _url = "http://192.168.1.108:5000/api/excel";
-  
-
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
 
-  async generateExcel(registros: Registro[]) {
+  public generateTemperaturaExcel(registros: Registro[]) {
 
     const title = "Temperatura Climatologia Matthei";
     const header = "TEMPERATURAS";
-    var data = [];
+    let data = [];
     data.push(["Fecha", "Minima", "Maxima", "Media"]);
     for (let index = 0; index < registros.length; index++) {
       const registro = registros[index];
@@ -32,12 +28,11 @@ export class ExcelService {
       
       data.push([
         fecha,
-        temperatura.minima ? temperatura.minima : 'No Registrado',
-        temperatura.maxima ? temperatura.maxima : 'No Registrado',
-        temperatura.minima && temperatura.maxima ? 
+        temperatura.minima != null ? temperatura.minima : 'No Registrado',
+        temperatura.maxima != null ? temperatura.maxima : 'No Registrado',
+        temperatura.minima != null && temperatura.maxima != null ? 
           ((temperatura.minima + temperatura.maxima)/2) : 'No Calculado'
       ]);
-      
       
     }
     
@@ -61,7 +56,6 @@ export class ExcelService {
         }
       });
     });
-    //const row = worksheet.addRows(data);
 
     workbook.xlsx.writeBuffer().then((data: any) => {
       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });

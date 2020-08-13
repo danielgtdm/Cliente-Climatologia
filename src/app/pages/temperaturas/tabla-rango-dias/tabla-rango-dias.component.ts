@@ -71,11 +71,11 @@ export class TablaRangoDiasComponent implements OnInit {
     return this.fechas;
   }
 
-  public exportarExcel() {
+  private exportarExcel() {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{
-      //this.excelService.generateNubosidadExcel(this.listaRegistros);
+      this.excelService.generateTemperaturaExcel(this.listaRegistros);
     }
   }
 
@@ -105,9 +105,9 @@ export class TablaRangoDiasComponent implements OnInit {
 
     for (let i = 0; i < lista.length; i++) {
       const day = lista[i] as Date;
-      var reg = new Registro();
+      let reg = new Registro();
       reg.fecha = day;
-      var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
+      const promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
       .catch(err => {
         console.log( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
@@ -121,7 +121,7 @@ export class TablaRangoDiasComponent implements OnInit {
 
   private viewDataTable(listaRegistros: Registro[]) {
     const registros = listaRegistros;
-    var data: FSEntry[] = []; 
+    let data: FSEntry[] = []; 
 
     for (let i = 0; i < registros.length; i++) {
       const registro = registros[i];
@@ -146,7 +146,7 @@ export class TablaRangoDiasComponent implements OnInit {
 
   private registroNoEncontrado(reg: Registro) : Registro {
     this.registrosNoEncontrados.push(reg);
-    var registroNoEncontrado = new Registro();
+    let registroNoEncontrado = new Registro();
     registroNoEncontrado.Temperatura = new Temperatura();
 
     return registroNoEncontrado;
