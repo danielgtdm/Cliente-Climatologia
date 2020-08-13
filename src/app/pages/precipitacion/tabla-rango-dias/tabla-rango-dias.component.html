@@ -1,4 +1,4 @@
-<nb-card>
+<nb-card accent="primary">
     <nb-card-header>
       <h5 class="card-title">Tabla Precipitacion</h5>
     </nb-card-header>
@@ -9,6 +9,13 @@
           <nb-rangepicker #perrito (rangeChange)="selectedDate($event)"></nb-rangepicker>
         </div>
       </div>
+            <div class="row">
+        <div class="buttons-center">
+          <button (click)="exportarExcel()" nbButton status="basic">Exportar a Excel</button>
+          <button (click)="exportarCSV()" nbButton status="basic">Exportar a CSV</button>
+        </div>
+      </div>
+ 
       <div class="row">
         <table [nbTreeGrid]="source">
             <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>

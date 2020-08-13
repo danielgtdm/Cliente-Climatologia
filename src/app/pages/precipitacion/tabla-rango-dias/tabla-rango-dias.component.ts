@@ -12,7 +12,7 @@ import { CsvService } from 'src/app/services/csv.service';
 
 interface FSEntry {
   'Fecha': string;
-  'Agua Caida': string;
+  'Agua Caida': number | string;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
@@ -72,7 +72,7 @@ export class TablaRangoDiasComponent implements OnInit {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{
-      //this.excelService.generateExcel(this.listaRegistros);
+      this.excelService.generatePrecipitacionExcel(this.listaRegistros);
     }
   }
 
@@ -106,7 +106,6 @@ export class TablaRangoDiasComponent implements OnInit {
       reg.fecha = day;
       var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
       .catch(err => {
-        alert( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
 
       promesa ? 
