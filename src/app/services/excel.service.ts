@@ -467,6 +467,55 @@ export class ExcelService {
   }
 
 
+  public generateTermometroSecoExcel(registros: Registro[]) {
+
+    const title = "Termometro Seco Climatologia Matthei";
+    const header = "TERMOMETRO SECO";
+    let data = [];
+    data.push(["Fecha", "08:30 hrs", "14:00 hrs", "18:00 hrs"]);
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+
+      const ts = registro.TermometroSeco;
+      const fecha = registro.fecha.toString().substring(0, 10);
+      
+      data.push([
+        fecha,
+        ts.h0830 != null ? ts.h0830 : 'No Registrado',
+        ts.h1400 != null ? ts.h1400 : 'No Registrado',
+        ts.h1800 != null ? ts.h1800 : 'No Registrado' 
+      ]);
+      
+    }
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Estacion");
+
+    const titleRow = worksheet.addRow([title]);
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
+    worksheet.addRow([]);
+    const subtitleRow = worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([header]);
+    data.forEach(rowData => {
+      const row = worksheet.addRow(rowData);
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
+    });
+
+    workbook.xlsx.writeBuffer().then((data: any) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob,'TermometroSeco_Estacion_Matthei.xlsx');
+    });
+  }
+
+
 
 
 }
