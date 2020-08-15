@@ -24,7 +24,7 @@ export class ExcelService {
       const registro = registros[index];
 
       const temperatura = registro.Temperatura;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
       
       data.push([
         fecha,
@@ -76,8 +76,8 @@ export class ExcelService {
       const th = registro.TermometroHumedo;
       const ts = registro.TermometroSeco;
       const pa = registro.PresionAtmosferica;
-      const fecha = registro.fecha.toString().substring(0, 10);
-      
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       data.push([
         fecha,
         th.h0830 != null && ts.h0830 != null && pa.h0830 != null ? 
@@ -127,7 +127,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const aguaCaida = registro.agua_caida;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -174,7 +175,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const nubosidad = registro.Nubosidad;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -232,7 +234,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const horasSol = registro.horas_sol;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -279,7 +282,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const evaporimetro = registro.evaporamiento;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -326,7 +330,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const pa = registro.PresionAtmosferica;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -375,7 +380,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const visibilidad = registro.Visibilidad;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -424,7 +430,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const gt = registro.Geotermometro;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -477,7 +484,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const ts = registro.TermometroSeco;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
@@ -526,7 +534,8 @@ export class ExcelService {
       const registro = registros[index];
 
       const th = registro.TermometroHumedo;
-      const fecha = registro.fecha.toString().substring(0, 10);
+      const fecha = registro.fecha != null ? registro.fecha.toString().substring(0, 10) : 'Fecha No Registrada';
+
       
       data.push([
         fecha,
