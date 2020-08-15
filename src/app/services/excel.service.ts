@@ -316,5 +316,157 @@ export class ExcelService {
   }
 
 
+  public generatePresionAtmosfericaExcel(registros: Registro[]) {
+
+    const title = "Presion Atmosferica Climatologia Matthei";
+    const header = "PRESION ATMOSFERICA";
+    let data = [];
+    data.push(["Fecha", "08:30 hrs", "14:00 hrs", "18:00 hrs"]);
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+
+      const pa = registro.PresionAtmosferica;
+      const fecha = registro.fecha.toString().substring(0, 10);
+      
+      data.push([
+        fecha,
+        pa.h0830 != null ? pa.h0830 : 'No Registrado',
+        pa.h1400 != null ? pa.h1400 : 'No Registrado',
+        pa.h1800 != null ? pa.h1800 : 'No Registrado' 
+      ]);
+      
+    }
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Estacion");
+
+    const titleRow = worksheet.addRow([title]);
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
+    worksheet.addRow([]);
+    const subtitleRow = worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([header]);
+    data.forEach(rowData => {
+      const row = worksheet.addRow(rowData);
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
+    });
+
+    workbook.xlsx.writeBuffer().then((data: any) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob,'Presion_Atmosferica_Estacion_Matthei.xlsx');
+    });
+  }
+
+
+  public generateVisibilidadExcel(registros: Registro[]) {
+
+    const title = "Visibilidad Climatologia Matthei";
+    const header = "VISIBILIDAD";
+    let data = [];
+    data.push(["Fecha", "08:30 hrs", "14:00 hrs", "18:00 hrs"]);
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+
+      const visibilidad = registro.Visibilidad;
+      const fecha = registro.fecha.toString().substring(0, 10);
+      
+      data.push([
+        fecha,
+        visibilidad.h0830 != null ? visibilidad.h0830 : 'No Registrado',
+        visibilidad.h1400 != null ? visibilidad.h1400 : 'No Registrado',
+        visibilidad.h1800 != null ? visibilidad.h1800 : 'No Registrado' 
+      ]);
+      
+    }
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Estacion");
+
+    const titleRow = worksheet.addRow([title]);
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
+    worksheet.addRow([]);
+    const subtitleRow = worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([header]);
+    data.forEach(rowData => {
+      const row = worksheet.addRow(rowData);
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
+    });
+
+    workbook.xlsx.writeBuffer().then((data: any) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob,'Visibilidad_Estacion_Matthei.xlsx');
+    });
+  }
+
+
+  public generateGeotermometroExcel(registros: Registro[]) {
+
+    const title = "Geotermometros Climatologia Matthei";
+    const header = "GEOTERMOMETROS";
+    let data = [];
+    data.push(["Fecha", "2cm", "5cm", "10cm", "20cm", "30cm", "50cm", "100cm"]);
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+
+      const gt = registro.Geotermometro;
+      const fecha = registro.fecha.toString().substring(0, 10);
+      
+      data.push([
+        fecha,
+        gt.cm2 != null ? gt.cm2 : 'No Registrado',
+        gt.cm5 != null ? gt.cm5 : 'No Registrado',
+        gt.cm10 != null ? gt.cm10 : 'No Registrado',
+        gt.cm20 != null ? gt.cm20 : 'No Registrado',
+        gt.cm30 != null ? gt.cm30 : 'No Registrado',
+        gt.cm50 != null ? gt.cm50 : 'No Registrado',
+        gt.cm100 != null ? gt.cm100 : 'No Registrado'
+      ]);
+      
+    }
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Estacion");
+
+    const titleRow = worksheet.addRow([title]);
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
+    worksheet.addRow([]);
+    const subtitleRow = worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([header]);
+    data.forEach(rowData => {
+      const row = worksheet.addRow(rowData);
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
+    });
+
+    workbook.xlsx.writeBuffer().then((data: any) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob,'Geotermometros_Estacion_Matthei.xlsx');
+    });
+  }
+
+
+
 
 }

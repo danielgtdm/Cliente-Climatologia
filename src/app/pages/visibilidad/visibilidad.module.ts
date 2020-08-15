@@ -10,6 +10,7 @@ import { GraficoRangoAniosComponent } from './grafico-rango-anios/grafico-rango-
 import { NbCardModule } from '@nebular/theme';
 import { NbDatepickerModule } from '@nebular/theme';
 import { NbTreeGridModule } from '@nebular/theme';
+import { NbButtonModule } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
 import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
@@ -22,7 +23,8 @@ import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.com
     NbCardModule,
     NbDatepickerModule,
     NbTreeGridModule,
-    ChartsModule
+    ChartsModule,
+    NbButtonModule
   ]
 })
 export class VisibilidadModule { }
