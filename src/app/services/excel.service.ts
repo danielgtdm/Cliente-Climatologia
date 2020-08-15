@@ -269,5 +269,52 @@ export class ExcelService {
   }
 
 
+  public generateEvaporimetroExcel(registros: Registro[]) {
+
+    const title = "Evaporimetro Climatologia Matthei";
+    const header = "EVAPORIMETRO"; 
+    let data = [];
+    data.push(["Fecha", "Evaporamiento"]);
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+
+      const evaporimetro = registro.evaporamiento;
+      const fecha = registro.fecha.toString().substring(0, 10);
+      
+      data.push([
+        fecha,
+        evaporimetro != null ? evaporimetro : 'No Registrado'
+      ]);
+      
+    }
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Estacion");
+
+    const titleRow = worksheet.addRow([title]);
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
+    worksheet.addRow([]);
+    const subtitleRow = worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([header]);
+    data.forEach(rowData => {
+      const row = worksheet.addRow(rowData);
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
+    });
+
+    workbook.xlsx.writeBuffer().then((data: any) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob,'Evaporimetro_Estacion_Matthei.xlsx');
+    });
+  }
+
+
 
 }
