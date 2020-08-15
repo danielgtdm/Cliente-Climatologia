@@ -164,6 +164,55 @@ export class ExcelService {
   }
 
 
+  public generateNubosidadExcel(registros: Registro[]) {
+
+    const title = "Nubosidad Climatologia Matthei";
+    const header = "NUBOSIDAD";
+    let data = [];
+    data.push(["Fecha", "08:30 hrs", "14:00 hrs", "18:00 hrs"]);
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+
+      const nubosidad = registro.Nubosidad;
+      const fecha = registro.fecha.toString().substring(0, 10);
+      
+      data.push([
+        fecha,
+        nubosidad.h0830 != null ? nubosidad.h0830 : 'No Registrado',
+        nubosidad.h1400 != null ? nubosidad.h1400 : 'No Registrado',
+        nubosidad.h1800 != null ? nubosidad.h1800 : 'No Registrado' 
+      ]);
+      
+    }
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Estacion");
+
+    const titleRow = worksheet.addRow([title]);
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
+    worksheet.addRow([]);
+    const subtitleRow = worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([header]);
+    data.forEach(rowData => {
+      const row = worksheet.addRow(rowData);
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
+    });
+
+    workbook.xlsx.writeBuffer().then((data: any) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob,'Nubosidad_Estacion_Matthei.xlsx');
+    });
+  }
+
+
 
   private getHumedadRelativa(th: number, ts: number, pa: number): number {
     var humedadRelativa : number;
@@ -172,6 +221,53 @@ export class ExcelService {
 
     return Math.round(humedadRelativa * 100) / 100; //Obtener redondeo a 2 decimales
   }
+
+  public generateHorasSolExcel(registros: Registro[]) {
+
+    const title = "Horas Sol Climatologia Matthei";
+    const header = "HORAS SOL"; 
+    let data = [];
+    data.push(["Fecha", "Horas Sol"]);
+    for (let index = 0; index < registros.length; index++) {
+      const registro = registros[index];
+
+      const horasSol = registro.horas_sol;
+      const fecha = registro.fecha.toString().substring(0, 10);
+      
+      data.push([
+        fecha,
+        horasSol != null ? horasSol : 'No Registrado'
+      ]);
+      
+    }
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Estacion");
+
+    const titleRow = worksheet.addRow([title]);
+    titleRow.font = { name: 'Calibri', family: 4, size: 16}
+    worksheet.addRow([]);
+    const subtitleRow = worksheet.addRow([]);
+
+    const headerRow = worksheet.addRow([header]);
+    data.forEach(rowData => {
+      const row = worksheet.addRow(rowData);
+      row.eachCell((cell, number) => {
+        cell.border = {
+          top: {style:'thin'},
+          left: {style:'thin'},
+          bottom: {style:'thin'},
+          right: {style:'thin'}
+        }
+      });
+    });
+
+    workbook.xlsx.writeBuffer().then((data: any) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fs.saveAs(blob,'Horas_Sol_Estacion_Matthei.xlsx');
+    });
+  }
+
 
 
 }

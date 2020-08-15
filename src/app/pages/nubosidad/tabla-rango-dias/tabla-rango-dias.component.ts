@@ -14,9 +14,9 @@ import { CsvService } from 'src/app/services/csv.service';
 
 interface FSEntry {
   'Fecha': string;
-  '08:30 hrs': string;
-  '14:00 hrs': string;
-  '18:00 hrs': string;
+  '08:30 hrs': number | string;
+  '14:00 hrs': number | string;
+  '18:00 hrs': number | string;
   childEntries?: FSEntry[];
   expanded?: boolean;
 }
@@ -76,7 +76,7 @@ export class TablaRangoDiasComponent implements OnInit {
     if(this.listaRegistros.length == 0){
       alert('Primero debes seleccionar un rango de fechas');
     }else{
-      //this.excelService.generateNubosidadExcel(this.listaRegistros);
+      this.excelService.generateNubosidadExcel(this.listaRegistros);
     }
   }
 
@@ -110,7 +110,6 @@ export class TablaRangoDiasComponent implements OnInit {
       reg.fecha = day;
       var promesa = await this.registroService.getRegistroByFecha(reg).toPromise()
       .catch(err => {
-        alert( 'No se ha encontrado la fecha ' + day.toString().substring(0, 15));
       });
 
       promesa ? 
