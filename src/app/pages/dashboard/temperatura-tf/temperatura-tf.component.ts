@@ -99,7 +99,7 @@ export class TemperaturaTfComponent implements OnInit {
         });
 
       promesa ?
-        listaRegistros.push(promesa.payload as Registro) : alert('error');
+        listaRegistros.push(promesa.payload as Registro) : ()=>{};
     }
 
     for (let index = 0; index < listaRegistros.length - 1; index++) {
@@ -122,7 +122,7 @@ export class TemperaturaTfComponent implements OnInit {
     this.trainstdesv = math.std(this.trainData).toFixed(2);
     this.validationstdesv = math.std(this.validationData).toFixed(2);
 
-    alert('Listo para entrenar');
+    //alert('Listo para entrenar');
 
   }
 
