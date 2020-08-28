@@ -15,6 +15,7 @@ import { NbCardModule } from '@nebular/theme';
 import { NbButtonModule } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
+import { HistorialDiaComponent } from './historial-dia/historial-dia.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { ChartsModule } from 'ng2-charts';
     GraficoRangoDiasComponent, 
     GraficoRangoMesesComponent, 
     GraficoRangoAniosComponent, 
-    TablaRangoDiasComponent
+    TablaRangoDiasComponent, HistorialDiaComponent
   ],
   imports: [
     CommonModule,
