@@ -36,7 +36,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'Rango de Años',
         link: '/pages/temperaturas/grafico-rango-anios',
       },
-
+      {
+        title: 'Historial Día',
+        link: '/pages/temperaturas/historial-dia',
+      },     
     ],
   },
   {
@@ -63,6 +66,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/humedad/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/humedad/historial-dia',
       }
     ],
   },
@@ -90,6 +97,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/precipitacion/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/precipitacion/historial-dia',
       }
     ],
   },
@@ -117,6 +128,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/nubosidad/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/nubosidad/historial-dia',
       }
     ],
   },
@@ -144,6 +159,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/horas-sol/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/horas-sol/historial-dia',
       }
     ],
   },
@@ -171,6 +190,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/evaporimetro/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/evaporimetro/historial-dia',
       }
     ],
   },
@@ -198,6 +221,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/presion-atmosferica/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/presion-atmosferica/historial-dia',
       }
     ],
   },
@@ -225,6 +252,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/visibilidad/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/visibilidad/historial-dia',
       }
     ],
   },
@@ -252,6 +283,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/geotermometros/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/geotermometros/historial-dia',
       }
     ],
   },
@@ -279,6 +314,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/termometro-seco/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/termometro-seco/historial-dia',
       }
     ],
   },
@@ -306,6 +345,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Rango de Años',
         link: '/pages/termometro-humedo/grafico-rango-anios',
+      },
+      {
+        title: 'Historial Día',
+        link: '/pages/termometro-humedo/historial-dia',
       }
     ],
   },
