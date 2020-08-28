@@ -14,9 +14,10 @@ import { NbButtonModule } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
 import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
+import { HistorialDiaComponent } from './historial-dia/historial-dia.component';
 
 @NgModule({
-  declarations: [GeotermometrosComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent, TablaRangoDiasComponent],
+  declarations: [GeotermometrosComponent, GraficoRangoDiasComponent, GraficoRangoMesesComponent, GraficoRangoAniosComponent, TablaRangoDiasComponent, HistorialDiaComponent],
   imports: [
     CommonModule,
     GeotermometrosRoutingModule,

@@ -15,13 +15,14 @@ import { NbTreeGridModule } from '@nebular/theme';
 import { NbButtonComponent } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
+import { HistorialDiaComponent } from './historial-dia/historial-dia.component';
 
 @NgModule({
   declarations: [
     HorasSolComponent,
     GraficoRangoDiasComponent,
     GraficoRangoMesesComponent, 
-    GraficoRangoAniosComponent, TablaRangoDiasComponent
+    GraficoRangoAniosComponent, TablaRangoDiasComponent, HistorialDiaComponent
   ],
   imports: [
     CommonModule,
