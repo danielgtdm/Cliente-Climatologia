@@ -1,6 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { TokenInterceptorService } from './services/token-interceptor.service';
+import { AuthService } from './services/auth.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http'
 import { AppComponent } from './app.component';
@@ -59,7 +63,12 @@ import { EntrenandoComponent } from './pages/dialogs/entrenando/entrenando.compo
     RegistrosNoEncontradosComponent,
     EntrenandoComponent
   ],
-  providers: [],
+  providers: [AuthService,
+    {
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptorService,
+    multi: true
+  }],
   bootstrap: [AppComponent] 
 })
 export class AppModule { }
