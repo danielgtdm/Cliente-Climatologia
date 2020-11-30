@@ -11,345 +11,171 @@ export const MENU_ITEMS: NbMenuItem[] = [
     title: 'GRAFICOS',
     group: true,
   },
+
   {
     title: 'Temperaturas',
     icon: 'thermometer-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/temperaturas/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/temperaturas/tabla-rango-dias',
-          },
-        ]
+        title: 'Gráfico',
+        link: '/pages/temperaturas/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/temperaturas/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/temperaturas/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/temperaturas/historial-dia',
-      },     
-    ],
+        title: 'Tabla',
+        link: '/pages/temperaturas/tabla-rango-dias',
+      }     
+    ]
   },
+
   {
     title: 'Humedad',
     icon: 'percent-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/humedad/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/humedad/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/humedad/grafico-rango-dias'
+
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/humedad/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/humedad/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/humedad/historial-dia',
+        title: 'Tabla',
+        link: '/pages/humedad/tabla-rango-dias',
       }
-    ],
+    ]
   },
+
   {
     title: 'Precipitación',
     icon: 'droplet-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/precipitacion/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/precipitacion/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/precipitacion/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/precipitacion/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/precipitacion/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/precipitacion/historial-dia',
+        title: 'Tabla',
+        link: '/pages/precipitacion/tabla-rango-dias',
       }
-    ],
+    ]
   },
+
   {
     title: 'Nubosidad',
     icon: 'cloud-upload-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/nubosidad/grafico-rango-dias'
-          },
-          {
-            title: ' Tabla',
-            link: '/pages/nubosidad/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/nubosidad/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/nubosidad/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/nubosidad/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/nubosidad/historial-dia',
+        title: 'Tabla',
+        link: '/pages/nubosidad/tabla-rango-dias',
       }
-    ],
+    ]
   },
+
   {
     title: 'Horas de Sol',
     icon: 'clock-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/horas-sol/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/horas-sol/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/horas-sol/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/horas-sol/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/horas-sol/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/horas-sol/historial-dia',
+        title: 'Tabla',
+        link: '/pages/horas-sol/tabla-rango-dias'
       }
-    ],
+    ]
   },
+
   {
     title: 'Evaporimetro',
     icon: 'clock-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/evaporimetro/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/evaporimetro/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/evaporimetro/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/evaporimetro/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/evaporimetro/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/evaporimetro/historial-dia',
+        title: 'Tabla',
+        link: '/pages/evaporimetro/tabla-rango-dias'
       }
-    ],
+    ]
   },
+
   {
     title: 'Presion Atmosferica',
     icon: 'clock-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/presion-atmosferica/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/presion-atmosferica/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/presion-atmosferica/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/presion-atmosferica/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/presion-atmosferica/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/presion-atmosferica/historial-dia',
+        title: 'Tabla',
+        link: '/pages/presion-atmosferica/tabla-rango-dias'
       }
-    ],
+    ]
   },
+
   {
     title: 'Visibilidad',
     icon: 'clock-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/visibilidad/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/visibilidad/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/visibilidad/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/visibilidad/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/visibilidad/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/visibilidad/historial-dia',
+        title: 'Tabla',
+        link: '/pages/visibilidad/tabla-rango-dias'
       }
-    ],
+    ]
   },
+
   {
     title: 'Geotermometros',
     icon: 'clock-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/geotermometros/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/geotermometros/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/geotermometros/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/geotermometros/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/geotermometros/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/geotermometros/historial-dia',
+        title: 'Tabla',
+        link: '/pages/geotermometros/tabla-rango-dias'
       }
-    ],
+    ]
   },
+
   {
     title: 'Termometro Seco',
     icon: 'clock-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/termometro-seco/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/termometro-seco/tabla-rango-dias'
-          }
-        ]
+        title: 'Gráfico',
+        link: '/pages/termometro-seco/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/termometro-seco/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/termometro-seco/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/termometro-seco/historial-dia',
+        title: 'Tabla',
+        link: '/pages/termometro-seco/tabla-rango-dias'
       }
-    ],
+    ]
   },
+
   {
     title: 'Termometro Humedo',
     icon: 'clock-outline',
     children: [
       {
-        title: 'Rango de Dias',
-        children: [
-          {
-            title: 'Grafico',
-            link: '/pages/termometro-humedo/grafico-rango-dias'
-          },
-          {
-            title: 'Tabla',
-            link: '/pages/termometro-humedo/tabla-rango-dias'
-          }
-        ]
+        title: 'Grafico',
+        link: '/pages/termometro-humedo/grafico-rango-dias'
       },
       {
-        title: 'Rango de Meses',
-        link: '/pages/termometro-humedo/grafico-rango-meses',
-      },
-      {
-        title: 'Rango de Años',
-        link: '/pages/termometro-humedo/grafico-rango-anios',
-      },
-      {
-        title: 'Historial Día',
-        link: '/pages/termometro-humedo/historial-dia',
+        title: 'Tabla',
+        link: '/pages/termometro-humedo/tabla-rango-dias'
       }
-    ],
-  },
+    ]
+  }
+  
 ];

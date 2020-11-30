@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { TermometroHumedoComponent } from './termometro-humedo.component';
 import { GraficoRangoDiasComponent } from './grafico-rango-dias/grafico-rango-dias.component';
-import { GraficoRangoMesesComponent } from './grafico-rango-meses/grafico-rango-meses.component';
-import { GraficoRangoAniosComponent } from './grafico-rango-anios/grafico-rango-anios.component';
 
 import { TermometroHumedoRoutingModule } from './termometro-humedo-routing.module';
 
@@ -15,15 +13,12 @@ import { NbButtonModule } from '@nebular/theme';
 
 import { ChartsModule } from 'ng2-charts';
 import { TablaRangoDiasComponent } from './tabla-rango-dias/tabla-rango-dias.component';
-import { HistorialDiaComponent } from './historial-dia/historial-dia.component';
 
 @NgModule({
   declarations: [
     TermometroHumedoComponent, 
-    GraficoRangoDiasComponent, 
-    GraficoRangoMesesComponent, 
-    GraficoRangoAniosComponent, 
-    TablaRangoDiasComponent, HistorialDiaComponent
+    GraficoRangoDiasComponent,
+    TablaRangoDiasComponent
   ],
   imports: [
     CommonModule,
