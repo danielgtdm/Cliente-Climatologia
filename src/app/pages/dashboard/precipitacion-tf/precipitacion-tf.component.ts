@@ -1,6 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { NbDialogService } from '@nebular/theme';
 
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
@@ -47,8 +45,6 @@ export class PrecipitacionTfComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
   constructor(
-    private dialogService: NbDialogService,
-    private http: HttpClient,
     private registroService: RegistroService
   ) {
 
@@ -56,14 +52,14 @@ export class PrecipitacionTfComponent implements OnInit {
 
   ngOnInit() {
     const dates: Date[] = this.dateSelection();
-    const registros = this.getData(dates);
+    this.getData(dates);
   }
 
   private dateSelection(): Date[] {
     let dates: Date[] = [];
     const today = new Date();
 
-    for (let index = 0; index < 7; index++) {
+    for (let index = 7; index > 0; index--) {
       let day = new Date();
       day.setDate(day.getDate() - index);
       dates.push(day);

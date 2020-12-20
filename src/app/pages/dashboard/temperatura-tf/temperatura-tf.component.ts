@@ -55,14 +55,14 @@ export class TemperaturaTfComponent implements OnInit {
 
   ngOnInit() {
     const dates: Date[] = this.dateSelection();
-    const registros = this.getData(dates);
+    this.getData(dates);
   }
 
   private dateSelection(): Date[] {
     let dates: Date[] = [];
     const today = new Date();
 
-    for (let index = 0; index < 7; index++) {
+    for (let index = 7; index > 0; index--) {
       let day = new Date();
       day.setDate(day.getDate() - index);
       dates.push(day);

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { Label, BaseChartDirective } from 'ng2-charts';
 
 import { RegistroService } from 'src/app/services/registro.service';
@@ -33,7 +32,6 @@ export class PresionTfComponent implements OnInit {
   public barChartLabels: Label[] = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   public barChartType: ChartType = 'line';
   public barChartLegend = true;
-  public barChartPlugins = [pluginDataLabels];
 
   public barChartData: ChartDataSets[] = [
     { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
@@ -50,14 +48,14 @@ export class PresionTfComponent implements OnInit {
 
   ngOnInit() {
     const dates: Date[] = this.dateSelection();
-    const registros = this.getData(dates);
+    this.getData(dates);
   }
 
   private dateSelection(): Date[] {
     let dates: Date[] = [];
     const today = new Date();
 
-    for (let index = 0; index < 7; index++) {
+    for (let index = 7; index > 0; index--) {
       let day = new Date();
       day.setDate(day.getDate() - index);
       dates.push(day);
