@@ -12,11 +12,17 @@ import { NbTreeGridModule } from '@nebular/theme';
 import { NbInputModule } from '@nebular/theme';
 import { NbSelectModule } from '@nebular/theme';
 
+import { ChartsModule } from 'ng2-charts';
+import { PrecipitacionTfComponent } from './precipitacion-tf/precipitacion-tf.component';
+import { PresionTfComponent } from './presion-tf/presion-tf.component';
+
 
 @NgModule({
   declarations: [
     DashboardComponent,
     TemperaturaTfComponent,
+    PrecipitacionTfComponent,
+    PresionTfComponent,
   ],
   imports: [
     CommonModule,
@@ -26,7 +32,8 @@ import { NbSelectModule } from '@nebular/theme';
     NbButtonModule,
     NbTreeGridModule,
     NbInputModule,
-    NbSelectModule
+    NbSelectModule,
+    ChartsModule
   ]
 })
 export class DashboardModule { }

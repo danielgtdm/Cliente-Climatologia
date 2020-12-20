@@ -1,0 +1,24 @@
+<nb-card accent="primary">
+    <nb-card-header>
+      <h5 class="card-title">Presión Atmosférica</h5>
+      <div class="row">
+        <p class="card-subtitle">Últimos 7 Días</p>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <div class="container grafico-alto">
+          <div class="flex">
+            <div class="flex-item">
+              <div style="display: block;">
+                <canvas baseChart width="200" height="200" [datasets]="barChartData" [labels]="barChartLabels"
+                  [options]="barChartOptions" [colors]="barChartColors" [legend]="barChartLegend"
+                  [chartType]="barChartType" [plugins]="barChartPlugins"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+  

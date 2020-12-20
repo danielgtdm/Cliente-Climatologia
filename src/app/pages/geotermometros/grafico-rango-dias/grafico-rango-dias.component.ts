@@ -36,7 +36,7 @@ export class GraficoRangoDiasComponent implements OnInit {
     { data: [], label: '100cm' },
   ];
   public lineChartLabels: Label[] = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-  public lineChartOptions: (ChartOptions & { annotation: any }) = {
+  public lineChartOptions: (ChartOptions) = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
@@ -58,24 +58,7 @@ export class GraficoRangoDiasComponent implements OnInit {
           }
         }
       ]
-    },
-    annotation: {
-      annotations: [
-        {
-          type: 'line',
-          mode: 'vertical',
-          scaleID: 'x-axis-0',
-          value: 'Jueves',
-          borderColor: 'orange',
-          borderWidth: 2,
-          label: {
-            enabled: true,
-            fontColor: 'orange',
-            content: 'Mitad del Periodo'
-          }
-        },
-      ],
-    },
+    }
   };
   public lineChartColors: Color[] = [
     { // 2cm

@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { PagesComponent } from './pages.component';
 import { PagesRoutingModule } from './pages-routing.module';
 import { ThemeModule } from '../theme/theme.module';
+import { ChartsModule } from 'ng2-charts';
+
 
 @NgModule({
   declarations: [
@@ -14,7 +16,8 @@ import { ThemeModule } from '../theme/theme.module';
     CommonModule,
     NbMenuModule,
     ThemeModule,
-    PagesRoutingModule
+    PagesRoutingModule,
+    ChartsModule
   ]
 })
 export class PagesModule { }

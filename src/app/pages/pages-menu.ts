@@ -90,7 +90,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
 
   {
     title: 'Evaporimetro',
-    icon: 'clock-outline',
+    icon: 'arrow-upward-outline',
     children: [
       {
         title: 'Gráfico',
@@ -105,7 +105,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
 
   {
     title: 'Presion Atmosferica',
-    icon: 'clock-outline',
+    icon: 'globe-2-outline',
     children: [
       {
         title: 'Gráfico',
@@ -120,7 +120,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
 
   {
     title: 'Visibilidad',
-    icon: 'clock-outline',
+    icon: 'eye-outline',
     children: [
       {
         title: 'Gráfico',
@@ -135,7 +135,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
 
   {
     title: 'Geotermometros',
-    icon: 'clock-outline',
+    icon: 'diagonal-arrow-right-down-outline',
     children: [
       {
         title: 'Gráfico',
@@ -150,7 +150,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
 
   {
     title: 'Termometro Seco',
-    icon: 'clock-outline',
+    icon: 'thermometer-plus-outline',
     children: [
       {
         title: 'Gráfico',
@@ -165,7 +165,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
 
   {
     title: 'Termometro Humedo',
-    icon: 'clock-outline',
+    icon: 'thermometer-minus-outline',
     children: [
       {
         title: 'Grafico',

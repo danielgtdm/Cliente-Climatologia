@@ -1,31 +1,26 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { Label, BaseChartDirective } from 'ng2-charts';
-
 
 import { RegistroService } from 'src/app/services/registro.service';
 
 import { Registro } from 'src/app/models/registro';
-import { Temperatura } from 'src/app/models/temperatura';
+import { PresionAtmosferica } from 'src/app/models/presion-atmosferica';
 
 @Component({
-  selector: 'app-temperatura-tf',
-  templateUrl: './temperatura-tf.component.html',
-  styleUrls: ['./temperatura-tf.component.scss']
+  selector: 'app-presion-tf',
+  templateUrl: './presion-tf.component.html',
+  styleUrls: ['./presion-tf.component.scss']
 })
-export class TemperaturaTfComponent implements OnInit {
+export class PresionTfComponent implements OnInit {
 
   public barChartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
     scales: {
-      xAxes: [{}], yAxes: [{
-        ticks: {
-          beginAtZero: true
-        }
-      }]
+      xAxes: [{}], yAxes: [{}]
     },
     plugins: {
       datalabels: {
@@ -36,7 +31,7 @@ export class TemperaturaTfComponent implements OnInit {
     maintainAspectRatio: false
   };
   public barChartLabels: Label[] = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-  public barChartType: ChartType = 'bar';
+  public barChartType: ChartType = 'line';
   public barChartLegend = true;
   public barChartPlugins = [pluginDataLabels];
 
@@ -82,21 +77,23 @@ export class TemperaturaTfComponent implements OnInit {
         registros.push(promesa.payload as Registro) : () => { };
     }
 
-    let minimas = [];
-    let maximas = [];
+    let h0830 = [];
+    let h1400 = [];
+    let h1800 = [];
     let ChartLabels = [];
     registros.forEach(registro => {
       ChartLabels.push(registro.fecha.toString().substring(0, 10));
-      const temperatura = registro.Temperatura as Temperatura;
-      minimas.push(temperatura.minima);
-      maximas.push(temperatura.maxima);
+      const presion = registro.PresionAtmosferica as PresionAtmosferica;
+      h0830.push(presion.h0830);
+      h1400.push(presion.h1400);
+      h1800.push(presion.h1800);
     });
     this.barChartLabels = ChartLabels;
     this.barChartData = [
-      { data: maximas, label: 'Maximas' },
-      { data: minimas, label: 'Minimas' }
+      { data: h0830, label: '08:30 hrs.' },
+      { data: h1400, label: '14:00 hrs.' },
+      { data: h1800, label: '18:00 hrs.' }
     ]
   }
-
 
 }

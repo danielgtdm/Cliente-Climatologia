@@ -1,22 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { HttpClient } from '@angular/common/http';
+import { NbDialogService } from '@nebular/theme';
 
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { Label, BaseChartDirective } from 'ng2-charts';
-
 
 import { RegistroService } from 'src/app/services/registro.service';
 
 import { Registro } from 'src/app/models/registro';
-import { Temperatura } from 'src/app/models/temperatura';
 
 @Component({
-  selector: 'app-temperatura-tf',
-  templateUrl: './temperatura-tf.component.html',
-  styleUrls: ['./temperatura-tf.component.scss']
+  selector: 'app-precipitacion-tf',
+  templateUrl: './precipitacion-tf.component.html',
+  styleUrls: ['./precipitacion-tf.component.scss']
 })
-export class TemperaturaTfComponent implements OnInit {
-
+export class PrecipitacionTfComponent implements OnInit {
   public barChartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
@@ -48,6 +47,8 @@ export class TemperaturaTfComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
   constructor(
+    private dialogService: NbDialogService,
+    private http: HttpClient,
     private registroService: RegistroService
   ) {
 
@@ -82,21 +83,17 @@ export class TemperaturaTfComponent implements OnInit {
         registros.push(promesa.payload as Registro) : () => { };
     }
 
-    let minimas = [];
-    let maximas = [];
+    let agua_caida = [];
     let ChartLabels = [];
     registros.forEach(registro => {
       ChartLabels.push(registro.fecha.toString().substring(0, 10));
-      const temperatura = registro.Temperatura as Temperatura;
-      minimas.push(temperatura.minima);
-      maximas.push(temperatura.maxima);
+      const agua = registro.agua_caida;
+      agua_caida.push(agua);
     });
     this.barChartLabels = ChartLabels;
     this.barChartData = [
-      { data: maximas, label: 'Maximas' },
-      { data: minimas, label: 'Minimas' }
+      { data: agua_caida, label: 'Agua Caida' }
     ]
   }
-
 
 }
